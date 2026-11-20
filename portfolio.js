@@ -5,7 +5,8 @@ const homeLink = document.querySelector(".monogram");
 const closeButton = document.querySelector(".close-folder");
 const gallery = document.querySelector(".illustration-gallery");
 const artworkPreview = document.querySelector("#artwork-preview");
-const artworkImage = artworkPreview.querySelector(".artwork-preview-image");
+const artworkStage = artworkPreview.querySelector(".artwork-preview-stage");
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const artworkClose = artworkPreview.querySelector(".artwork-preview-close");
 const folders = [...document.querySelectorAll("[data-folder]")].map((element) => ({
   element,
@@ -15,6 +16,8 @@ const folders = [...document.querySelectorAll("[data-folder]")].map((element) =>
 }));
 
 let activeFolder = null;
+let previewedArtwork = null;
+let previewAnimation;
 
 function updateScrollLayout() {
   const scrolled = (activeFolder?.body.scrollTop ?? 0) > 0;
@@ -25,7 +28,7 @@ function updateScrollLayout() {
 }
 
 function showFolder(nextFolder) {
-  if (nextFolder !== activeFolder && artworkPreview.open) artworkPreview.close();
+  if (nextFolder !== activeFolder && artworkPreview.open) finishArtworkPreview();
   const selectedIndex = folders.indexOf(nextFolder);
   const focusedElement = document.activeElement;
   const focusedFolderIndex = folders.findIndex(({ tab }) => tab === focusedElement);
@@ -86,17 +89,94 @@ for (const folder of folders) {
   folder.body.addEventListener("scroll", updateScrollLayout, { passive: true });
 }
 
+function artworkBounds(figure) {
+  const frames = [...figure.children].map(element => element.getBoundingClientRect());
+  const left = Math.min(...frames.map(frame => frame.left));
+  const top = Math.min(...frames.map(frame => frame.top));
+  const right = Math.max(...frames.map(frame => frame.right));
+  const bottom = Math.max(...frames.map(frame => frame.bottom));
+  return new DOMRect(left, top, right - left, bottom - top);
+}
+
+function artworkTransform(source, destination) {
+  const x = source.x + source.width / 2 - destination.x - destination.width / 2;
+  const y = source.y + source.height / 2 - destination.y - destination.height / 2;
+  return `translate(${x}px, ${y}px) scale(${source.width / destination.width})`;
+}
+
+function finishArtworkPreview() {
+  previewAnimation?.cancel();
+  previewAnimation = null;
+  previewedArtwork?.classList.remove("is-previewed");
+  previewedArtwork = null;
+  artworkPreview.classList.remove("is-presented");
+  artworkPreview.close();
+  artworkStage.replaceChildren();
+}
+
+function closeArtworkPreview() {
+  if (!artworkPreview.classList.contains("is-presented")) return;
+  if (reducedMotion.matches) {
+    finishArtworkPreview();
+    return;
+  }
+
+  artworkPreview.classList.remove("is-presented");
+  const from = getComputedStyle(artworkStage).transform;
+  previewAnimation?.cancel();
+  const target = artworkTransform(artworkBounds(previewedArtwork), artworkStage.getBoundingClientRect());
+  previewAnimation = artworkStage.animate([{ transform: from }, { transform: target }], {
+    duration: 300,
+    easing: "cubic-bezier(.4, 0, .2, 1)",
+    fill: "forwards",
+  });
+  previewAnimation.onfinish = finishArtworkPreview;
+}
+
 gallery.addEventListener("click", (event) => {
   const trigger = event.target.closest(".illustration-print");
   if (!trigger || artworkPreview.open) return;
-  const image = trigger.querySelector("img");
-  artworkImage.alt = image.alt;
-  artworkImage.src = image.currentSrc || image.src;
+
+  const figure = trigger.closest(".illustration");
+  const bounds = artworkBounds(figure);
+  if (!bounds.width || !bounds.height) return;
+  const frame = figure.getBoundingClientRect();
+  const copy = figure.cloneNode(true);
+  const button = copy.querySelector("button");
+  const print = document.createElement("div");
+  print.className = button.className;
+  print.style.cssText = button.style.cssText;
+  const image = button.querySelector("img");
+  image.loading = "eager";
+  print.append(image);
+  button.replaceWith(print);
+  copy.style.left = `${100 * (frame.x - bounds.x) / bounds.width}%`;
+  copy.style.top = `${100 * (frame.y - bounds.y) / bounds.height}%`;
+  copy.style.width = `${100 * frame.width / bounds.width}%`;
+  copy.style.height = `${100 * frame.height / bounds.height}%`;
+
+  artworkStage.style.setProperty("--art-ratio", bounds.width / bounds.height);
+  artworkStage.replaceChildren(copy);
   artworkPreview.showModal();
+  const destination = artworkStage.getBoundingClientRect();
+  previewedArtwork = figure;
+  figure.classList.add("is-previewed");
+  artworkPreview.classList.add("is-presented");
+
+  if (!reducedMotion.matches) {
+    previewAnimation = artworkStage.animate([
+      { transform: artworkTransform(bounds, destination) },
+      { transform: "none" },
+    ], { duration: 460, easing: "cubic-bezier(.22, .75, .2, 1)" });
+  }
 });
-artworkClose.addEventListener("click", () => artworkPreview.close());
+artworkClose.addEventListener("click", closeArtworkPreview);
+artworkPreview.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeArtworkPreview();
+});
 artworkPreview.addEventListener("click", (event) => {
-  if (event.target === artworkPreview) artworkPreview.close();
+  if (event.target === artworkPreview) closeArtworkPreview();
 });
 
 closeButton.addEventListener("click", () => navigate(null));

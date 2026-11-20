@@ -254,6 +254,7 @@ button { font: inherit; }
 }
 .illustration {
   position: absolute;
+  transition-property: none;
   left: var(--x);
   top: var(--y);
   width: var(--w);
@@ -406,16 +407,20 @@ button { font: inherit; }
   background: transparent;
   color: #fff;
 }
-.artwork-preview::backdrop { background: #171717eb; }
-.artwork-preview-image {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: min(100%, 90vw);
-  max-height: calc(100dvh - 96px);
-  margin-inline: auto;
-  object-fit: contain;
+.artwork-preview::backdrop {
+  background: #171717eb;
+  opacity: 0;
+  transition: opacity 280ms ease;
 }
+.artwork-preview.is-presented::backdrop { opacity: 1; }
+.artwork-preview-stage {
+  position: relative;
+  width: min(900px, calc(100vw - 36px), calc((100dvh - 108px) * var(--art-ratio)));
+  aspect-ratio: var(--art-ratio);
+}
+.artwork-preview-stage > .illustration { position: absolute; }
+.artwork-preview-stage .illustration-print { cursor: inherit; }
+.illustration.is-previewed { visibility: hidden; }
 .artwork-preview-close {
   position: fixed;
   z-index: 1;
