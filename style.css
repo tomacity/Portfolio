@@ -2,8 +2,8 @@
   color-scheme: light;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #21202c;
-  background: #f4eddf;
-  --grid: #c5bcc4;
+  background: #e2e3e5;
+  --grid: #cbd0de;
   --motion: 560ms cubic-bezier(.22, .75, .2, 1);
 }
 
@@ -29,7 +29,6 @@ button { font: inherit; }
   height: 100svh;
   min-height: 500px;
   overflow: hidden;
-  background-color: #f4eddf;
   background-image: linear-gradient(90deg, var(--grid) 1px, transparent 1px), linear-gradient(var(--grid) 1px, transparent 1px);
   background-position: center -1px;
   background-size: 38px 38px;
@@ -500,133 +499,4 @@ html.has-morph-cursor {
   opacity: 1;
   transform: translateY(0);
   transition-delay: 45ms;
-}
-
-.desk-scene, .desk-margin {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.desk-scene {
-  opacity: 1;
-  transition: opacity 240ms ease;
-}
-.is-open .desk-scene { opacity: 0; }
-.is-open .desk-scene .desk-object,
-.is-open .desk-scene .desk-notebook-page { animation-play-state: paused; }
-.desk-object {
-  position: absolute;
-  top: var(--y);
-  left: var(--x);
-  width: var(--size);
-  display: block;
-  transform: rotate(var(--tilt));
-  animation: desk-drift var(--period) cubic-bezier(.45, 0, .55, 1) var(--phase) infinite alternate;
-}
-.desk-object--edge { right: 2.6%; }
-.desk-object img { display: block; width: 100%; height: auto; }
-.desk-object--clip { filter: drop-shadow(2px 6px 4px #28213946); }
-.desk-scene .desk-object--left-clip { z-index: 1; }
-
-.desk-note {
-  display: block;
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 1px 2px 10px 2px;
-  background: linear-gradient(172deg, #00000009 0 16%, transparent 16.5% 74%, #fff4 100%), var(--note, #ead487);
-  box-shadow: inset 0 -1px #fff6, 3px 7px 8px #4233282a, 9px 17px 22px #42332821;
-}
-.desk-note::before {
-  content: "";
-  position: absolute;
-  top: 33%;
-  left: 18%;
-  width: 61%;
-  height: 42%;
-  background: linear-gradient(175deg, transparent 12%, #3629 12% 18%, transparent 18% 44%, #3628 44% 50%, transparent 50% 76%, #3627 76% 81%, transparent 81%);
-  clip-path: polygon(0 0, 100% 0, 100% 24%, 72% 24%, 72% 61%, 88% 61%, 88% 100%, 0 100%);
-  opacity: .44;
-}
-.desk-note::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 25%;
-  height: 24%;
-  border-radius: 90% 0 10px 0;
-  background: linear-gradient(138deg, transparent 47%, #fff6 53%, #8e744b26 100%);
-}
-.desk-object--lavender { --note: #beb0d8; }
-.desk-object--lavender .desk-note::before { opacity: .23; }
-
-.desk-tape {
-  display: block;
-  aspect-ratio: 3.1;
-  background: repeating-linear-gradient(90deg, #fff4 0 1px, transparent 1px 4px), linear-gradient(175deg,#fff3c6ae,#d6b46a98);
-  clip-path: polygon(1% 0, 99% 0, 97% 13%, 100% 28%, 97% 43%, 99% 55%, 96% 73%, 100% 91%, 98% 100%, 2% 100%, 4% 87%, 1% 72%, 3% 55%, 0 41%, 3% 24%, 0 12%);
-  box-shadow: inset 0 1px #fff9, inset 0 -1px #96774866;
-}
-.desk-object--tape { filter: drop-shadow(0 3px 2px #60482f36); }
-
-.desk-notebook {
-  display: block;
-  position: relative;
-  aspect-ratio: 1.37;
-  border-radius: 3px 5px 6px 2px;
-  background: #504979;
-  box-shadow: 5px 8px 0 -3px #2a254e, 6px 12px 3px #2a254e25, 12px 22px 30px #3a2d422c;
-  perspective: 600px;
-}
-.desk-notebook-page {
-  position: absolute;
-  inset: 3% 3% 5% 7%;
-  border-radius: 2px 4px 5px 1px;
-  background: linear-gradient(90deg, #8d795b38, transparent 10%), repeating-linear-gradient(0deg, transparent 0 11px, #887b9d42 11px 12px), repeating-linear-gradient(90deg, transparent 0 11px, #887b9d31 11px 12px), #f9f1db;
-  box-shadow: 0 2px #d8c7a8, 0 4px #f0e4c8, 0 5px #b9a47e;
-  transform-origin: left center;
-  animation: notebook-breathe calc(var(--period) * 1.35) ease-in-out var(--phase) infinite alternate;
-}
-.desk-notebook-page::after {
-  content: "";
-  position: absolute;
-  left: 32%;
-  top: 26%;
-  width: 44%;
-  height: 42%;
-  border: 1px solid #745b9799;
-  border-radius: 44% 56% 63% 37%;
-  box-shadow: 4px 3px 0 -2px #745b9777, -3px 6px 0 -2px #745b9755;
-  transform: rotate(-12deg);
-}
-.desk-notebook-rings {
-  position: absolute;
-  left: -4%;
-  top: 10%;
-  bottom: 10%;
-  width: 15%;
-  background: repeating-linear-gradient(180deg, #423b50 0 1px, #f9f5ec 1px 2px, #888093 2px 3px, transparent 3px 12px);
-  border-radius: 12px;
-  filter: drop-shadow(1px 2px 1px #211b3055);
-}
-
-@keyframes desk-drift {
-  from { transform: translate3d(0, 3px, 0) rotate(var(--tilt)); }
-  to { transform: translate3d(4px, -8px, 0) rotate(calc(var(--tilt) + 4deg)); }
-}
-@keyframes notebook-breathe {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(-10deg) translateY(-1px); }
-}
-@media (max-width: 700px), (max-height: 550px) {
-  .desk-scene .desk-object--primary { --mobile-size: 108px; left: -4%; top: 12%; }
-  .desk-scene .desk-object--yellow { --mobile-size: 72px; left: auto; right: -2%; top: 11%; }
-  .desk-scene .desk-object--right-clip { --mobile-size: 13px; left: auto; right: 7%; top: 11%; }
-  .desk-scene .desk-object--lower-tape { --mobile-size: 49px; left: 5%; top: 42%; }
-  .desk-scene .desk-object { width: var(--mobile-size, var(--size)); }
-  .desk-scene .desk-object--upper-tape, .desk-scene .desk-object--left-clip,
-  .desk-scene .desk-object--lavender, .desk-margin { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .desk-object, .desk-notebook-page { animation: none !important; }
 }
