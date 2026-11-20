@@ -13,6 +13,7 @@ const folders = [...document.querySelectorAll("[data-folder]")].map((element) =>
   name: element.dataset.folder,
   tab: element.querySelector(".folder-tab"),
   body: element.querySelector(".folder-body"),
+  scrollArea: element.dataset.folder === "illustrations" ? element : element.querySelector(".folder-body"),
 }));
 
 let activeFolder = null;
@@ -20,10 +21,12 @@ let previewedArtwork = null;
 let previewAnimation;
 
 function updateScrollLayout() {
-  const scrolled = (activeFolder?.body.scrollTop ?? 0) > 0;
+  const illustrationsOpen = activeFolder?.name === "illustrations";
+  const tabHeight = illustrationsOpen ? activeFolder.tab.offsetHeight : 0;
+  const scrolled = (activeFolder?.scrollArea.scrollTop ?? 0) > tabHeight;
   portfolio.classList.toggle("is-scrolled", scrolled);
   if (scrolled && folders.some((folder) => folder !== activeFolder && folder.tab === document.activeElement)) {
-    activeFolder.tab.focus({ preventScroll: true });
+    (illustrationsOpen ? activeFolder.body : activeFolder.tab).focus({ preventScroll: true });
   }
 }
 
@@ -64,7 +67,7 @@ function showFolder(nextFolder) {
     }
   }
 
-  if (nextFolder && nextFolder !== previousFolder) nextFolder.body.scrollTop = 0;
+  if (nextFolder && nextFolder !== previousFolder) nextFolder.scrollArea.scrollTop = 0;
   updateScrollLayout();
   if (focusWasInsideFolder || focusWillBeCovered || (focusWasOnClose && !nextFolder)) {
     (nextFolder ?? previousFolder)?.tab.focus({ preventScroll: true });
@@ -86,7 +89,7 @@ function navigate(folder) {
 
 for (const folder of folders) {
   folder.tab.addEventListener("click", () => navigate(activeFolder === folder ? null : folder));
-  folder.body.addEventListener("scroll", updateScrollLayout, { passive: true });
+  folder.scrollArea.addEventListener("scroll", updateScrollLayout, { passive: true });
 }
 
 function artworkBounds(figure) {
