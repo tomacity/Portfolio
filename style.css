@@ -70,6 +70,7 @@ button { font: inherit; }
   --tab-width: clamp(127px, 20vw, 264px);
   --open-top: 59px;
   --dock-peek: clamp(25px, 3.4vh, 37px);
+  --dock-space: calc(var(--tab-height) * min(1, var(--front-folders, 0)) + var(--dock-peek) * max(0, var(--front-folders, 0) - 1));
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -156,12 +157,13 @@ button { font: inherit; }
   z-index: calc(5 + var(--dock-index));
 }
 .is-open .folder:not(.is-active) .folder-tab { font-size: clamp(.69rem, 1.4vw, .93rem); }
+.is-open .folder.is-behind { z-index: var(--stack); }
 .folder.is-active { transform: translateY(var(--open-top)); --handle-tail: 0px; z-index: 5; }
 .folder.is-active::before { border-radius: 0; }
 .folder-body {
   position: absolute;
   inset: calc(var(--tab-height) - 1px) 0 auto;
-  height: calc(100% - var(--open-top) - var(--tab-height) * 2 - var(--dock-peek) * 2 - 12px);
+  bottom: calc(var(--open-top) + var(--dock-space) + 12px);
   pointer-events: auto;
   overflow: auto;
   overscroll-behavior: contain;

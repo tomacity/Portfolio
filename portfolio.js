@@ -13,18 +13,26 @@ const folders = [...document.querySelectorAll("[data-folder]")].map((element) =>
 let activeFolder = null;
 
 function showFolder(nextFolder) {
-  const focusWasInsideFolder = activeFolder?.body.contains(document.activeElement);
-  const focusWasOnClose = document.activeElement === closeButton;
+  const selectedIndex = folders.indexOf(nextFolder);
+  const focusedElement = document.activeElement;
+  const focusedFolderIndex = folders.findIndex(({ tab }) => tab === focusedElement);
+  const focusWasInsideFolder = activeFolder !== nextFolder && activeFolder?.body.contains(focusedElement);
+  const focusWillBeCovered = focusedFolderIndex >= 0 && focusedFolderIndex < selectedIndex;
+  const focusWasOnClose = focusedElement === closeButton;
   const previousFolder = activeFolder;
   activeFolder = nextFolder;
   let dockIndex = 0;
 
   portfolio.classList.toggle("is-open", Boolean(nextFolder));
+  portfolio.style.setProperty("--front-folders", folders.length - selectedIndex - 1);
   closeButton.hidden = !nextFolder;
 
-  for (const folder of folders) {
-    const isActive = folder === nextFolder;
+  for (const [index, folder] of folders.entries()) {
+    const isActive = index === selectedIndex;
+    const isBehind = index < selectedIndex;
     folder.element.classList.toggle("is-active", isActive);
+    folder.element.classList.toggle("is-behind", isBehind);
+    folder.element.inert = isBehind;
     folder.tab.setAttribute("aria-expanded", String(isActive));
     folder.body.hidden = !isActive;
     if (!isActive) {
@@ -34,7 +42,7 @@ function showFolder(nextFolder) {
     }
   }
 
-  if (focusWasInsideFolder || (focusWasOnClose && !nextFolder)) {
+  if (focusWasInsideFolder || focusWillBeCovered || (focusWasOnClose && !nextFolder)) {
     (nextFolder ?? previousFolder)?.tab.focus({ preventScroll: true });
   }
 }
