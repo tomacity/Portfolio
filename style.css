@@ -261,6 +261,10 @@ button { font: inherit; }
 }
 .illustration-print {
   position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
   left: 50%;
   top: 50%;
   width: var(--w);
@@ -386,4 +390,58 @@ button { font: inherit; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+}
+
+.artwork-preview {
+  position: fixed;
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+.artwork-preview::backdrop { background: #171717eb; }
+.artwork-preview-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 90vw);
+  max-height: calc(100dvh - 96px);
+  margin-inline: auto;
+  object-fit: contain;
+}
+.artwork-preview-close {
+  position: fixed;
+  z-index: 1;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #ffffff80;
+  border-radius: 50%;
+  background: #171717;
+  color: #fff;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.artwork-preview-close:hover { background: #373737; }
+
+@media (any-pointer: fine) {
+  html {
+    --tap-cursor: url("./assets/cursor-tap.svg") 36 16, pointer;
+    cursor: url("./assets/cursor-arrow.svg") 25 3, default;
+  }
+  html :is(a[href], button:enabled), .artwork-preview::backdrop {
+    cursor: var(--tap-cursor);
+  }
 }

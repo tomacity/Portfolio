@@ -3,6 +3,10 @@
 const portfolio = document.querySelector(".portfolio");
 const homeLink = document.querySelector(".monogram");
 const closeButton = document.querySelector(".close-folder");
+const gallery = document.querySelector(".illustration-gallery");
+const artworkPreview = document.querySelector("#artwork-preview");
+const artworkImage = artworkPreview.querySelector(".artwork-preview-image");
+const artworkClose = artworkPreview.querySelector(".artwork-preview-close");
 const folders = [...document.querySelectorAll("[data-folder]")].map((element) => ({
   element,
   name: element.dataset.folder,
@@ -21,6 +25,7 @@ function updateScrollLayout() {
 }
 
 function showFolder(nextFolder) {
+  if (nextFolder !== activeFolder && artworkPreview.open) artworkPreview.close();
   const selectedIndex = folders.indexOf(nextFolder);
   const focusedElement = document.activeElement;
   const focusedFolderIndex = folders.findIndex(({ tab }) => tab === focusedElement);
@@ -81,13 +86,26 @@ for (const folder of folders) {
   folder.body.addEventListener("scroll", updateScrollLayout, { passive: true });
 }
 
+gallery.addEventListener("click", (event) => {
+  const trigger = event.target.closest(".illustration-print");
+  if (!trigger || artworkPreview.open) return;
+  const image = trigger.querySelector("img");
+  artworkImage.alt = image.alt;
+  artworkImage.src = image.currentSrc || image.src;
+  artworkPreview.showModal();
+});
+artworkClose.addEventListener("click", () => artworkPreview.close());
+artworkPreview.addEventListener("click", (event) => {
+  if (event.target === artworkPreview) artworkPreview.close();
+});
+
 closeButton.addEventListener("click", () => navigate(null));
 homeLink.addEventListener("click", (event) => {
   event.preventDefault();
   navigate(null);
 });
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && activeFolder) {
+  if (event.key === "Escape" && activeFolder && !artworkPreview.open) {
     event.preventDefault();
     const { tab } = activeFolder;
     navigate(null);
