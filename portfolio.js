@@ -114,3 +114,90 @@ document.addEventListener("keydown", (event) => {
 });
 window.addEventListener("hashchange", applyLocation);
 applyLocation();
+
+const morphCursor = document.querySelector(".morph-cursor");
+if (morphCursor) {
+  const root = document.documentElement;
+  const targets = "a[href], button:enabled";
+  const outline = morphCursor.querySelector(".morph-cursor-shape");
+  const coordinate = /-?\d+(?:\.\d+)?/g;
+  const arrowPath = outline.getAttribute("d");
+  const arrowPoints = arrowPath.match(coordinate).map(Number);
+  const tapPoints = outline.dataset.tapPath.match(coordinate).map(Number);
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const morphDuration = 180;
+  let currentPoints = arrowPoints;
+  let animationFrame;
+  let cursorX;
+  let cursorY;
+
+  function updateCursorShape(target = document.elementFromPoint(cursorX, cursorY)) {
+    const tappable = target === artworkPreview || Boolean(target?.closest(targets));
+    if (tappable === morphCursor.classList.contains("is-tap")) return;
+    morphCursor.classList.toggle("is-tap", tappable);
+    animateOutline(tappable ? tapPoints : arrowPoints);
+  }
+
+  function drawOutline(points) {
+    let index = 0;
+    outline.setAttribute("d", arrowPath.replace(coordinate, () => points[index++]));
+    currentPoints = points;
+  }
+
+  function animateOutline(target) {
+    cancelAnimationFrame(animationFrame);
+    if (reducedMotion.matches) {
+      drawOutline(target);
+      return;
+    }
+
+    const from = currentPoints;
+    const started = performance.now();
+
+    function frame(timestamp) {
+      const progress = Math.max(0, Math.min((timestamp - started) / morphDuration, 1));
+      const eased = 1 - (1 - progress) ** 3;
+      drawOutline(from.map((value, index) => value + (target[index] - value) * eased));
+      if (progress < 1) animationFrame = requestAnimationFrame(frame);
+    }
+
+    animationFrame = requestAnimationFrame(frame);
+  }
+
+  function syncCursorLayer() {
+    const layer = artworkPreview.open ? artworkPreview : document.body;
+    if (morphCursor.parentElement !== layer) layer.append(morphCursor);
+    if (!morphCursor.hidden) updateCursorShape();
+  }
+
+  function hideCursor() {
+    morphCursor.hidden = true;
+    root.classList.remove("has-morph-cursor");
+  }
+
+  function moveCursor(event) {
+    if (event.pointerType !== "mouse") return;
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+    morphCursor.style.transform = `translate3d(${cursorX - 36}px, ${cursorY - 16}px, 0)`;
+    morphCursor.hidden = false;
+    root.classList.add("has-morph-cursor");
+    updateCursorShape(event.target);
+  }
+
+  document.addEventListener("pointermove", moveCursor, { passive: true });
+  document.addEventListener("pointerover", moveCursor, { passive: true });
+  document.addEventListener("pointerout", (event) => {
+    if (event.pointerType === "mouse" && !event.relatedTarget) hideCursor();
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse") hideCursor();
+  }, { passive: true });
+  document.addEventListener("scroll", () => {
+    if (!morphCursor.hidden) updateCursorShape();
+  }, { capture: true, passive: true });
+  window.addEventListener("blur", hideCursor);
+  gallery.addEventListener("click", syncCursorLayer);
+  artworkPreview.addEventListener("close", syncCursorLayer);
+}
+

@@ -445,3 +445,35 @@ button { font: inherit; }
     cursor: var(--tap-cursor);
   }
 }
+
+/* The overlay keeps the tip and the TAP badge anchored to the same point. */
+html.has-morph-cursor {
+  --tap-cursor: none;
+  cursor: none;
+}
+.morph-cursor {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0 auto auto 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.morph-cursor-shape {
+  fill: #171717;
+  stroke: #737373;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.morph-cursor-label {
+  fill: #fff;
+  font: 700 13px Arial, sans-serif;
+  letter-spacing: 1.2px;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 100ms ease, transform 130ms ease;
+}
+.morph-cursor.is-tap .morph-cursor-label {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 45ms;
+}
