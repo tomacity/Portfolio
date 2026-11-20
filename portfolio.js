@@ -12,6 +12,14 @@ const folders = [...document.querySelectorAll("[data-folder]")].map((element) =>
 
 let activeFolder = null;
 
+function updateScrollLayout() {
+  const scrolled = (activeFolder?.body.scrollTop ?? 0) > 0;
+  portfolio.classList.toggle("is-scrolled", scrolled);
+  if (scrolled && folders.some((folder) => folder !== activeFolder && folder.tab === document.activeElement)) {
+    activeFolder.tab.focus({ preventScroll: true });
+  }
+}
+
 function showFolder(nextFolder) {
   const selectedIndex = folders.indexOf(nextFolder);
   const focusedElement = document.activeElement;
@@ -25,6 +33,11 @@ function showFolder(nextFolder) {
 
   portfolio.classList.toggle("is-open", Boolean(nextFolder));
   portfolio.style.setProperty("--front-folders", folders.length - selectedIndex - 1);
+  if (nextFolder) {
+    const palette = getComputedStyle(nextFolder.element);
+    portfolio.style.setProperty("--active-paper", palette.getPropertyValue("--paper"));
+    portfolio.style.setProperty("--active-ink", palette.color);
+  }
   closeButton.hidden = !nextFolder;
 
   for (const [index, folder] of folders.entries()) {
@@ -35,6 +48,7 @@ function showFolder(nextFolder) {
     folder.element.inert = isBehind;
     folder.tab.setAttribute("aria-expanded", String(isActive));
     folder.body.hidden = !isActive;
+    folder.body.tabIndex = isActive ? 0 : -1;
     if (!isActive) {
       folder.element.style.setProperty("--dock-index", dockIndex);
       folder.element.style.setProperty("--dock-center", ["24%", "50%", "76%"][dockIndex]);
@@ -42,6 +56,8 @@ function showFolder(nextFolder) {
     }
   }
 
+  if (nextFolder && nextFolder !== previousFolder) nextFolder.body.scrollTop = 0;
+  updateScrollLayout();
   if (focusWasInsideFolder || focusWillBeCovered || (focusWasOnClose && !nextFolder)) {
     (nextFolder ?? previousFolder)?.tab.focus({ preventScroll: true });
   }
@@ -49,7 +65,8 @@ function showFolder(nextFolder) {
 
 function applyLocation() {
   const name = location.hash.slice(1);
-  showFolder(folders.find((folder) => folder.name === name) ?? null);
+  const folderName = name === "extras" ? "illustrations" : name;
+  showFolder(folders.find((folder) => folder.name === folderName) ?? null);
 }
 
 function navigate(folder) {
@@ -61,6 +78,7 @@ function navigate(folder) {
 
 for (const folder of folders) {
   folder.tab.addEventListener("click", () => navigate(activeFolder === folder ? null : folder));
+  folder.body.addEventListener("scroll", updateScrollLayout, { passive: true });
 }
 
 closeButton.addEventListener("click", () => navigate(null));
