@@ -167,11 +167,11 @@ if (morphCursor) {
   function syncCursorLayer() {
     const layer = artworkPreview.open ? artworkPreview : document.body;
     if (morphCursor.parentElement !== layer) layer.append(morphCursor);
-    if (!morphCursor.hidden) updateCursorShape();
+    if (!morphCursor.hasAttribute("hidden")) updateCursorShape();
   }
 
   function hideCursor() {
-    morphCursor.hidden = true;
+    morphCursor.setAttribute("hidden", "");
     root.classList.remove("has-morph-cursor");
   }
 
@@ -180,7 +180,7 @@ if (morphCursor) {
     cursorX = event.clientX;
     cursorY = event.clientY;
     morphCursor.style.transform = `translate3d(${cursorX - 36}px, ${cursorY - 16}px, 0)`;
-    morphCursor.hidden = false;
+    morphCursor.removeAttribute("hidden");
     root.classList.add("has-morph-cursor");
     updateCursorShape(event.target);
   }
@@ -194,7 +194,7 @@ if (morphCursor) {
     if (event.pointerType !== "mouse") hideCursor();
   }, { passive: true });
   document.addEventListener("scroll", () => {
-    if (!morphCursor.hidden) updateCursorShape();
+    if (!morphCursor.hasAttribute("hidden")) updateCursorShape();
   }, { capture: true, passive: true });
   window.addEventListener("blur", hideCursor);
   gallery.addEventListener("click", syncCursorLayer);
