@@ -1,0 +1,83 @@
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+html { background:#e2e3e5; font-family:Arial,sans-serif; }
+body { margin:0; }
+img { vertical-align:middle; }
+:focus-visible { outline:3px solid #7b97ff; outline-offset:4px; }
+.frame-space { position:relative; width:100%; overflow:clip; }
+.frame-stack { position:absolute; inset:0 auto auto 0; width:1440px; transform-origin:top left; }
+.design-frame { position:relative; width:1440px; overflow:hidden; background:#e2e3e5; }
+.design-frame a, [data-artwork] { cursor:pointer; }
+.folder-hotspot { z-index:3; }
+.work-title { z-index:2; pointer-events:none; }
+[data-artwork].is-previewed, [data-tape].is-previewed { visibility:hidden; }
+.artwork-preview { position:fixed; inset:0; width:fit-content; height:fit-content; max-width:none; max-height:none; margin:auto; padding:0; overflow:visible; border:0; background:transparent; color:#fff; }
+.artwork-preview::backdrop { background:#171717eb; opacity:0; transition:opacity 280ms ease; }
+.artwork-preview.is-presented::backdrop { opacity:1; }
+.artwork-preview-stage { position:relative; pointer-events:none; }
+.artwork-preview-copy { position:absolute; transform-origin:top left; }
+.artwork-preview-close {
+  position: fixed;
+  z-index: 1;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #ffffff80;
+  border-radius: 50%;
+  background: #171717;
+  color: #fff;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.artwork-preview-close:hover { background: #373737; }
+
+@media (any-pointer: fine) {
+  html {
+    --tap-cursor: url("./assets/cursor-tap.svg") 36 16, pointer;
+    cursor: url("./assets/cursor-arrow.svg") 25 3, default;
+  }
+  html :is(a[href], button:enabled), .artwork-preview::backdrop {
+    cursor: var(--tap-cursor);
+  }
+}
+
+/* The overlay keeps the tip and the TAP badge anchored to the same point. */
+html.has-morph-cursor {
+  --tap-cursor: none;
+  cursor: none;
+}
+.morph-cursor {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0 auto auto 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.morph-cursor-shape {
+  fill: #171717;
+  stroke: #737373;
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.morph-cursor-label {
+  fill: #fff;
+  font: 700 13px Arial, sans-serif;
+  letter-spacing: 1.2px;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 100ms ease, transform 130ms ease;
+}
+.morph-cursor.is-tap .morph-cursor-label {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 45ms;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after { transition-duration:0s !important; transition-delay:0s !important; }
+}
