@@ -30,6 +30,11 @@ function setScale() {
   scale = frameSpace.clientWidth / parseFloat(activeFrame.style.width);
   frameStack.style.transform = `scale(${scale})`;
   frameSpace.style.height = `${parseFloat(activeFrame.style.height) * scale}px`;
+  const dockScale = folderDock.clientWidth / folderDock.firstElementChild.offsetWidth;
+  // The fixed viewport shows the folder layers from y=640 to the Home crop at y=1223.
+  folderDock.style.setProperty("--folder-dock-scale", dockScale);
+  folderDock.style.setProperty("--folder-dock-offset", `${-640 * dockScale}px`);
+  document.body.style.setProperty("--folder-dock-height", `${583 * dockScale}px`);
   pinTitle();
 }
 
@@ -185,7 +190,7 @@ artworkClose.addEventListener("click", closePreview);
 artworkPreview.addEventListener("cancel", event => { event.preventDefault(); closePreview(); });
 artworkPreview.addEventListener("click", event => { if (event.target === artworkPreview) closePreview(); });
 document.addEventListener("click", event => {
-  const link = event.target.closest(".folder-dock a, .folder-hotspot");
+  const link = event.target.closest(".folder-hotspot");
   if (link && link.hash !== location.hash && !event.defaultPrevented &&
       !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
     clickedFolder = link;

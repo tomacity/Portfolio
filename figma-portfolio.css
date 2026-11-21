@@ -1,7 +1,8 @@
 * { box-sizing:border-box; }
 [hidden] { display:none !important; }
-html { --folder-dock-height:clamp(44px, 5vw, 56px); background:#e2e3e5; font-family:Arial,sans-serif; }
-body { margin:0; padding-bottom:calc(var(--folder-dock-height) + env(safe-area-inset-bottom)); }
+html { background:#e2e3e5; font-family:Arial,sans-serif; }
+body { margin:0; }
+body:has(.design-frame[hidden][data-route="home"]) { padding-bottom:var(--folder-dock-height, 0px); }
 img { vertical-align:middle; }
 :focus-visible { outline:3px solid #7b97ff; outline-offset:4px; }
 .frame-space { position:relative; width:100%; overflow:clip; }
@@ -14,43 +15,18 @@ img { vertical-align:middle; }
   position:fixed;
   z-index:10;
   inset:auto 0 0;
-  display:flex;
-  align-items:stretch;
-  justify-content:center;
-  gap:clamp(2px, 0.6vw, 8px);
-  padding:0 max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
-  isolation:isolate;
+  height:var(--folder-dock-height, 0px);
+  overflow:hidden;
 }
-.folder-dock::before {
-  content:"";
+.folder-dock-canvas {
   position:absolute;
-  inset:50% 0 0;
-  z-index:-1;
-  background:#1f1e2b;
-  box-shadow:0 -2px 8px #17171733;
+  top:var(--folder-dock-offset, 0px);
+  width:1920px;
+  height:1365.333px;
+  transform:scale(var(--folder-dock-scale, 1));
+  transform-origin:top left;
 }
-.folder-dock a {
-  display:grid;
-  place-items:center;
-  flex:1 1 0;
-  min-width:0;
-  max-width:168px;
-  min-height:var(--folder-dock-height);
-  border-radius:clamp(9px, 1.5vw, 18px) clamp(9px, 1.5vw, 18px) 0 0;
-  background:var(--folder-color);
-  color:#efece5;
-  font:700 clamp(9px, 2.5vw, 15px)/1.1 "Courier New", monospace;
-  text-decoration:none;
-  text-transform:uppercase;
-  white-space:nowrap;
-}
-.folder-dock [href="#about"] { --folder-color:#2a2839; }
-.folder-dock [href="#sketching"] { --folder-color:#2c306b; }
-.folder-dock [href="#projects"] { --folder-color:#4e5b9e; }
-.folder-dock [href="#illustrations"] { --folder-color:#c4bda0; color:#252133; }
-.folder-dock a[aria-current="page"] { box-shadow:inset 0 2px currentColor; }
-.folder-dock a:hover { filter:brightness(1.15); }
-.folder-dock a:focus-visible { outline-offset:-4px; }
+.folder-dock a { outline-offset:-3px; }
 .work-title { z-index:2; pointer-events:none; }
 [data-artwork].is-previewed, [data-tape].is-previewed { visibility:hidden; }
 .artwork-preview { position:fixed; inset:0; width:fit-content; height:fit-content; max-width:none; max-height:none; margin:auto; padding:0; overflow:visible; border:0; background:transparent; color:#fff; }
