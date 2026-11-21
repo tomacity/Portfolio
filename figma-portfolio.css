@@ -5,7 +5,7 @@ body { margin:0; }
 img { vertical-align:middle; }
 :focus-visible { outline:3px solid #7b97ff; outline-offset:4px; }
 .frame-space { position:relative; width:100%; overflow:clip; }
-.frame-stack { position:absolute; inset:0 auto auto var(--frame-offset, 0px); width:1440px; transform-origin:top left; }
+.frame-stack { position:absolute; inset:0 auto auto 0; width:1440px; transform-origin:top left; }
 .design-frame { position:relative; width:1440px; overflow:hidden; background:#e2e3e5; }
 .design-frame a, [data-artwork] { cursor:pointer; }
 .folder-hotspot { z-index:3; }
@@ -81,36 +81,3 @@ html.has-morph-cursor {
 @media (prefers-reduced-motion:reduce) {
   *, *::before, *::after { transition-duration:0s !important; transition-delay:0s !important; }
 }
-
-#portfolio.has-folder-dock { padding-bottom: var(--dock-height); }
-:root { --dock-height: calc(52px + env(safe-area-inset-bottom)); }
-.folder-dock {
-  position: fixed;
-  z-index: 10;
-  inset: auto 0 0;
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  min-height: var(--dock-height);
-  gap: clamp(4px, 1.5vw, 14px);
-  padding-inline: clamp(6px, 3vw, 28px);
-  pointer-events: none;
-}
-.folder-dock-tab {
-  display: grid;
-  place-items: center;
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 180px;
-  padding: 0 8px env(safe-area-inset-bottom);
-  background: var(--folder-color);
-  border-radius: 16px 16px 0 0;
-  box-shadow: 0 -3px 10px #22202c33;
-  pointer-events: auto;
-}
-.folder-dock-tab:focus-visible { outline-offset: -4px; }
-.folder-dock-tab[href="#about"] { --folder-color: #211f2c; }
-.folder-dock-tab[href="#sketching"] { --folder-color: #2d3274; }
-.folder-dock-tab[href="#projects"] { --folder-color: #515fa6; }
-.folder-dock-tab[href="#illustrations"] { --folder-color: #c9c0a3; }
-.folder-dock-tab img { display: block; width: auto; max-width: 100%; height: auto; max-height: 16px; }
