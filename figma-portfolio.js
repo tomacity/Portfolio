@@ -1,5 +1,8 @@
 "use strict";
 
+const portfolio = document.querySelector("#portfolio");
+const folderDock = document.querySelector(".folder-dock");
+const dockTabs = [...folderDock.querySelectorAll("a")];
 const frameSpace = document.querySelector(".frame-space");
 const frameStack = document.querySelector(".frame-stack");
 const frames = [...document.querySelectorAll(".design-frame")];
@@ -17,7 +20,13 @@ let preview;
 let animation;
 
 function setScale() {
-  scale = frameSpace.clientWidth / 1440;
+  const frameWidth = activeFrame.offsetWidth;
+  const frameHeight = activeFrame.offsetHeight;
+  const availableWidth = frameSpace.clientWidth;
+  const fitWidth = availableWidth / frameWidth;
+  const fitHeight = document.documentElement.clientHeight / frameHeight;
+  scale = activeFrame === frames[0] ? Math.min(fitWidth, fitHeight) : fitWidth;
+  frameStack.style.setProperty("--frame-offset", `${(availableWidth - frameWidth * scale) / 2}px`);
   frameStack.style.transform = `scale(${scale})`;
   frameSpace.style.height = `${activeFrame.offsetHeight * scale}px`;
   pinTitle();
@@ -35,6 +44,9 @@ function route() {
   const name = location.hash.slice(1);
   activeFrame = frames.find(el => el.dataset.route === (aliases[name] ?? name)) ?? frames[0];
   frames.forEach(el => { el.hidden = el !== activeFrame; });
+  folderDock.hidden = activeFrame === frames[0];
+  portfolio.classList.toggle("has-folder-dock", !folderDock.hidden);
+  dockTabs.forEach(tab => { tab.hidden = tab.hash === "#" + activeFrame.dataset.route; });
   window.scrollTo(0, 0);
   setScale();
 }
