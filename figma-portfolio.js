@@ -24,9 +24,9 @@ let preview;
 let animation;
 
 function setScale() {
-  scale = frameSpace.clientWidth / 1440;
+  scale = frameSpace.clientWidth / parseFloat(activeFrame.style.width);
   frameStack.style.transform = `scale(${scale})`;
-  frameSpace.style.height = `${activeFrame.offsetHeight * scale}px`;
+  frameSpace.style.height = `${parseFloat(activeFrame.style.height) * scale}px`;
   pinTitle();
 }
 
@@ -52,7 +52,7 @@ function animateFolder(frame, sourceTop) {
   const movement = [{ transform: `translateY(${distance}px)` }, { transform: "none" }];
   folderOpening = [paper.animate(movement, rise), title.animate(movement, rise)];
 
-  for (const layer of frame.children) {
+  for (const layer of frame.querySelectorAll(":scope > *, :scope > [style*='display:contents'] > *")) {
     if (layer === paper || layer === title || layer === grid || layer.classList.contains("folder-hotspot")) continue;
     folderOpening.push(layer.animate([{ opacity: 0 }, { opacity: 1 }], {
       delay: 190, duration: 270, easing: "ease-out", fill: "backwards",
@@ -60,7 +60,7 @@ function animateFolder(frame, sourceTop) {
   }
 }
 
-function route() {
+function route(animate = true) {
   if (artworkPreview.open) finishPreview();
   folderOpening.forEach(effect => effect.cancel());
   folderOpening = [];
@@ -77,7 +77,7 @@ function route() {
   window.scrollTo(0, 0);
   setScale();
 
-  if (sourceTop !== null && folderLayers[activeFrame.dataset.route] && !motion.matches) {
+  if (animate && sourceTop !== null && folderLayers[activeFrame.dataset.route] && !motion.matches) {
     animateFolder(activeFrame, sourceTop);
   }
 }
@@ -180,7 +180,7 @@ window.addEventListener("scroll",pinTitle,{passive:true});
 document.addEventListener("keydown", event => {
   if (event.key === "Escape" && !event.defaultPrevented && activeFrame !== frames[0] && !artworkPreview.open) location.hash = "home";
 });
-route();
+route(false);
 
 const morphCursor = document.querySelector(".morph-cursor");
 if (morphCursor) {
