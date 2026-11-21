@@ -99,6 +99,7 @@ desk.addEventListener("pointerdown", event => {
   releasedDrag = null;
   drag = { object, id: event.pointerId, startX: event.clientX, startY: event.clientY, ...dragPositions.get(object), moved: false };
   object.setPointerCapture(event.pointerId);
+  if (event.pointerType === "mouse") document.documentElement.classList.add("is-holding");
 });
 desk.addEventListener("pointermove", event => {
   if (drag?.id !== event.pointerId) return;
@@ -112,6 +113,7 @@ desk.addEventListener("pointermove", event => {
 function finishDrag(event) {
   if (drag?.id !== event.pointerId) return;
   drag.object.classList.remove("is-dragging");
+  document.documentElement.classList.remove("is-holding");
   if (drag.moved) {
     releasedDrag = drag.object;
     deskStatus.textContent = drag.object.dataset.label + " moved.";

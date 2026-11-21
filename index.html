@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#eeeadf">
   <meta name="description" content="George Papaemmanouil, UI/UX designer and illustrator in Syros, Greece. A desk of selected work, drawings and things in motion.">
-  <title>George Papaemmanouil — Design & Illustration</title>
-  <link rel="stylesheet" href="studio.css?v=1">
-  <script src="studio.js?v=1" defer></script>
+  <title>Design, by hand.</title>
+  <link rel="stylesheet" href="studio.css?v=2">
+  <script src="studio.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip" href="#projects">Skip to the work</a>
   <header class="masthead wrap" id="home">
-    <a class="signature" href="#home" aria-label="George Papaemmanouil, home">gp<span>.</span></a>
+    <a class="signature" href="#home" aria-label="Home"><img src="assets/studio/loop-2.webp" alt="" width="42" height="42"></a>
     <nav aria-label="Main navigation">
       <a href="#projects">Work</a>
       <a href="#illustrations">Motion</a>
@@ -23,24 +23,23 @@
   <main>
     <section class="hero wrap" aria-labelledby="intro-title">
       <div class="intro">
-        <p class="eyebrow"><span aria-hidden="true"></span> George Papaemmanouil</p>
         <h1 id="intro-title">Design, <br><em>by hand.</em></h1>
         <p class="lede">I’m a UI/UX designer and illustrator in Syros, Greece. I draw, make things move, and turn ideas into interfaces.</p>
         <a class="work-link" href="#projects">Explore my work <span aria-hidden="true">↘</span></a>
       </div>
       <div class="desk" data-desk aria-label="Interactive desk collage">
         <div class="desk-sheet" aria-hidden="true"></div>
-        <img class="desk-ruler" src="assets/figma/cf769df775fec3f8.webp" alt="">
+        <button class="desk-ruler" type="button" data-drag data-label="Ruler" aria-label="Move ruler"><img src="assets/figma/cf769df775fec3f8.webp" alt="" draggable="false"></button>
         <img class="desk-ink" src="assets/figma/938d8583450976f1.webp" alt="">
-        <button class="hero-print print-billiards" type="button" data-piece="billiards" aria-label="Open Billiards & Grills">
+        <button class="hero-print print-billiards" type="button" data-drag data-label="Billiards print" data-piece="billiards" aria-label="Open Billiards & Grills">
           <img src="assets/figma/5038bac1ba0dc75f.webp" alt="Black-and-white Billiards & Grills poster">
         </button>
-        <button class="hero-print print-crown" type="button" data-piece="cards" aria-label="Open illustrated trading cards">
+        <button class="hero-print print-crown" type="button" data-drag data-label="Trading card print" data-piece="cards" aria-label="Open illustrated trading cards">
           <img src="assets/figma/a33f2b47fd859109.webp" alt="Blue hand-illustrated trading card with a crown">
         </button>
-        <img class="desk-fox" src="assets/figma/5bd3e5ec8a0de491.webp" alt="Hand-drawn dinner scene with a fox">
-        <div class="tape hero-tape" aria-hidden="true"></div>
-        <img class="binder" src="assets/figma/0c2ac328c5a24a85.webp" alt="">
+        <button class="desk-fox" type="button" data-drag data-label="Fox illustration" data-piece="dinner" aria-label="Open or move the fox illustration"><img src="assets/figma/5bd3e5ec8a0de491.webp" alt="" draggable="false"></button>
+        <button class="tape hero-tape" type="button" data-drag data-label="Tape" aria-label="Move tape"></button>
+        <button class="binder" type="button" data-drag data-label="Binder clip" aria-label="Move binder clip"><img src="assets/figma/0c2ac328c5a24a85.webp" alt="" draggable="false"></button>
         <button class="object desk-pen" type="button" data-drag data-label="Fountain pen" aria-label="Move fountain pen">
           <img src="assets/figma/aea5087e0dc84e66.webp" alt="" draggable="false">
         </button>
