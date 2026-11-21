@@ -11,6 +11,13 @@ const artworkClose = artworkPreview.querySelector(".artwork-preview-close");
 const motion = matchMedia("(prefers-reduced-motion: reduce)");
 const designs = {"24:84":["Sword trading card","35:6","35:8"],"24:88":["Billiards poster","35:4","35:5"],"24:89":["Picnic illustration","35:23"],"24:86":["Character collage","35:13","35:17"],"24:92":["Nightfall landscape","35:11","35:19"],"24:91":["Gorilla illustration","35:25","35:21"],"24:94":["Sota Men","35:29","35:39"],"24:96":["Crown trading card","35:15","35:27"],"24:87":["Mechanical illustration","35:35","35:37"],"24:93":["Train poster","35:41","35:31"],"24:95":["Cartoon characters","35:47","35:45"],"24:85":["Fan trading card","35:33","35:43"]};
 const aliases = { logos:"about", me:"about", sketches:"sketching", extras:"illustrations" };
+const folderLayers = {
+  about: { paper: "15:174", grid: "15:107", title: "35-64" },
+  sketching: { paper: "15:252", grid: "15:185", title: "43-3170" },
+  projects: { paper: "15:330", grid: "15:263", title: "15-497" },
+  illustrations: { paper: "40:3147", grid: "15:341", title: "40-3148" },
+};
+let folderOpening = [];
 let activeFrame = frames[0];
 let scale = 1;
 let preview;
@@ -30,13 +37,49 @@ function pinTitle() {
   workTitle.style.translate = `0 ${Math.max(0, distance)}px`;
 }
 
+function animateFolder(frame, sourceTop) {
+  const elements = folderLayers[frame.dataset.route];
+  const paper = frame.querySelector(`[data-node-id="${elements.paper}"]`);
+  const grid = frame.querySelector(`[data-node-id="${elements.grid}"]`);
+  const title = frame.querySelector(`img[src$="text-${elements.title}.svg"]`).parentElement;
+  const distance = Math.max(0, (sourceTop - paper.getBoundingClientRect().top) / scale);
+  if (distance < 1) return;
+
+  const rise = {
+    duration: 460,
+    easing: "cubic-bezier(.22,.75,.22,1)",
+  };
+  const movement = [{ transform: `translateY(${distance}px)` }, { transform: "none" }];
+  folderOpening = [paper.animate(movement, rise), title.animate(movement, rise)];
+
+  for (const layer of frame.children) {
+    if (layer === paper || layer === title || layer === grid || layer.classList.contains("folder-hotspot")) continue;
+    folderOpening.push(layer.animate([{ opacity: 0 }, { opacity: 1 }], {
+      delay: 190, duration: 270, easing: "ease-out", fill: "backwards",
+    }));
+  }
+}
+
 function route() {
   if (artworkPreview.open) finishPreview();
+  folderOpening.forEach(effect => effect.cancel());
+  folderOpening = [];
+
   const name = location.hash.slice(1);
-  activeFrame = frames.find(el => el.dataset.route === (aliases[name] ?? name)) ?? frames[0];
+  const next = frames.find(el => el.dataset.route === (aliases[name] ?? name)) ?? frames[0];
+  const link = next !== activeFrame && activeFrame.querySelector(`.folder-hotspot[href="#${next.dataset.route}"]`);
+  const sourceTop = link
+    ? Math.min(window.innerHeight, Math.max(0, link.getBoundingClientRect().top))
+    : null;
+
+  activeFrame = next;
   frames.forEach(el => { el.hidden = el !== activeFrame; });
   window.scrollTo(0, 0);
   setScale();
+
+  if (sourceTop !== null && folderLayers[activeFrame.dataset.route] && !motion.matches) {
+    animateFolder(activeFrame, sourceTop);
+  }
 }
 
 function groupBounds(elements) {
