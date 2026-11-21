@@ -159,3 +159,19 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 @media(max-width:610px){.masthead{height:64px;gap:11px}.masthead nav{gap:13px;font-size:13px}.signature{width:38px}.contact-link{font-size:11px;padding:8px 9px}.hero{grid-template-columns:1fr;padding-top:44px;gap:15px}.intro .lede{margin-bottom:17px}.desk{max-width:440px}.section-head{flex-wrap:wrap;margin-bottom:21px}.works{grid-template-columns:1fr;gap:31px}.work-image{height:clamp(245px,70vw,410px)}.motion{padding-block:54px 65px}.motion-grid{grid-template-columns:1fr 1fr;gap:15px}.loop:first-child{grid-column:span 2}.loop:first-child .loop-media{aspect-ratio:1.4}.sketch{grid-template-columns:1fr;gap:18px}.about-grid{grid-template-columns:1fr;margin-bottom:46px;gap:18px}.footer-line{gap:15px}.footer-line a:last-child{margin-left:0}}
 @media(max-width:350px){.masthead nav{gap:8px}.masthead .contact-link{padding:7px 6px}.filters button{padding-inline:9px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Each window displays one drawing from the original transparent sheet. */
+.ink-sticker{position:relative;display:block;overflow:hidden;flex:none}
+.ink-sticker img{position:absolute;width:var(--sheet-width);max-width:none;left:var(--sheet-x);top:var(--sheet-y);pointer-events:none}
+.ink-pencil{position:absolute;left:-1%;top:33%;width:17%;rotate:-11deg;z-index:2;transition:scale .3s var(--ease)}
+.ink-pencil:hover,.ink-pencil.is-dragging{scale:1.08}
+.work-heading{display:flex;align-items:center;gap:clamp(13px,2vw,28px)}
+.ink-pen{width:clamp(43px,7vw,108px);rotate:-12deg}
+.ink-profile{position:absolute;width:17%;top:30%;left:3%;rotate:-12deg}
+.about-title{position:relative}
+.ink-flower{position:absolute;width:clamp(52px,8vw,112px);right:3%;top:0;rotate:10deg;filter:invert(92%) sepia(16%) saturate(298%)}
+@media(max-width:610px){.ink-flower{right:0;top:-6%}}
+.ink-pencil{aspect-ratio:492/869;--sheet-width:416.26016%;--sheet-x:-50.00000%;--sheet-y:-15.76525%}
+.ink-pen{aspect-ratio:911/654;--sheet-width:224.80790%;--sheet-x:-103.29308%;--sheet-y:-28.28746%}
+.ink-flower{aspect-ratio:905/958;--sheet-width:226.29834%;--sheet-x:-12.70718%;--sheet-y:-109.49896%}
+.ink-profile{aspect-ratio:429/890;--sheet-width:477.38928%;--sheet-x:-264.56876%;--sheet-y:-105.61798%}

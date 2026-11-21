@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#eeeadf">
   <meta name="description" content="George Papaemmanouil, UI/UX designer and illustrator in Syros, Greece. A desk of selected work, drawings and things in motion.">
   <title>Design, by hand.</title>
-  <link rel="stylesheet" href="studio.css?v=2">
+  <link rel="stylesheet" href="studio.css?v=3">
   <script src="studio.js?v=2" defer></script>
 </head>
 <body>
@@ -50,6 +50,7 @@
           <img src="assets/figma/53a039153a04eaee.webp" alt="" draggable="false">
           <span>Unfold ↗</span>
         </button>
+        <button class="ink-sticker ink-pencil" type="button" data-drag data-label="Pencil character" aria-label="Move pencil character"><img src="assets/studio/ink-stickers.png" alt="" draggable="false"></button>
         <p class="desk-guide">Drag the objects <span aria-hidden="true">✳</span></p>
         <p class="sr-only" role="status" id="desk-status"></p>
       </div>
@@ -57,7 +58,8 @@
 
     <section class="work wrap" id="projects" aria-labelledby="work-title">
       <div class="section-head" data-reveal>
-        <h2 id="work-title">Selected work<span>.</span></h2>
+        <div class="work-heading"><h2 id="work-title">Selected work<span>.</span></h2>
+          <span class="ink-sticker ink-pen" role="img" aria-label="Hand-drawn selection box and pen nib"><img src="assets/studio/ink-stickers.png" alt="" loading="lazy"></span></div>
         <div class="filters" role="group" aria-label="Filter selected work">
           <button type="button" data-filter="all" aria-pressed="true">All</button>
           <button type="button" data-filter="design" aria-pressed="false">Design</button>
@@ -124,6 +126,7 @@
         <button class="work-link" type="button" data-piece="note">Read my desk note <span aria-hidden="true">↗</span></button>
       </div>
       <div class="sketch-props">
+        <span class="ink-sticker ink-profile" role="img" aria-label="Character in profile"><img src="assets/studio/ink-stickers.png" alt="" loading="lazy"></span>
         <img class="notebook" src="assets/figma/3d72e9b951b3f0a5.webp" alt="" loading="lazy">
         <img class="handwritten" src="assets/figma/0745709548986cf3.webp" alt="" loading="lazy">
         <img class="sketch-pen" src="assets/figma/aea5087e0dc84e66.webp" alt="" loading="lazy">
@@ -136,7 +139,8 @@
 
     <footer class="about" id="about">
       <div class="wrap about-grid">
-        <div><p class="eyebrow">About me</p><h2>Let’s make<br>something<span>.</span></h2></div>
+        <div class="about-title"><p class="eyebrow">About me</p><h2>Let’s make<br>something<span>.</span></h2>
+          <span class="ink-sticker ink-flower" role="img" aria-label="Flower character in a pot"><img src="assets/studio/ink-stickers.png" alt="" loading="lazy"></span></div>
         <div><p>I’m George, a UI/UX designer and illustrator based in Syros. I study Product and Systems Design Engineering at the University of the Aegean and co-founded Zisto.</p><a class="work-link" href="mailto:georgepapaemman@gmail.com">Email me <span aria-hidden="true">↗</span></a></div>
       </div>
       <div class="wrap footer-line"><span>George Papaemmanouil</span><a href="https://github.com/tomacity">GitHub ↗</a><a href="https://www.instagram.com/gpapaemman/">Instagram ↗</a><a href="#home">Back to top ↑</a></div>
