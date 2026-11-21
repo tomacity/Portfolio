@@ -2,6 +2,8 @@
 
 const frameSpace = document.querySelector(".frame-space");
 const frameStack = document.querySelector(".frame-stack");
+const folderDock = document.querySelector(".folder-dock");
+const dockLinks = [...folderDock.querySelectorAll("a")];
 const frames = [...document.querySelectorAll(".design-frame")];
 const gallery = frames.find(frame => frame.dataset.route === "illustrations");
 const workTitle = gallery.querySelector(".work-title");
@@ -18,6 +20,7 @@ const folderLayers = {
   illustrations: { paper: "40:3147", grid: "15:341", title: "40-3148" },
 };
 let folderOpening = [];
+let clickedFolder;
 let activeFrame = frames[0];
 let scale = 1;
 let preview;
@@ -67,12 +70,19 @@ function route(animate = true) {
 
   const name = location.hash.slice(1);
   const next = frames.find(el => el.dataset.route === (aliases[name] ?? name)) ?? frames[0];
-  const link = next !== activeFrame && activeFrame.querySelector(`.folder-hotspot[href="#${next.dataset.route}"]`);
+  const href = `#${next.dataset.route}`;
+  const link = next !== activeFrame && (clickedFolder?.hash === href
+    ? clickedFolder : dockLinks.find(tab => tab.hash === href));
+  clickedFolder = null;
   const sourceTop = link
     ? Math.min(window.innerHeight, Math.max(0, link.getBoundingClientRect().top))
     : null;
 
   activeFrame = next;
+  for (const tab of dockLinks) {
+    if (tab.hash === href) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
+  }
   frames.forEach(el => { el.hidden = el !== activeFrame; });
   window.scrollTo(0, 0);
   setScale();
@@ -174,6 +184,13 @@ gallery.addEventListener("keydown", event => {
 artworkClose.addEventListener("click", closePreview);
 artworkPreview.addEventListener("cancel", event => { event.preventDefault(); closePreview(); });
 artworkPreview.addEventListener("click", event => { if (event.target === artworkPreview) closePreview(); });
+document.addEventListener("click", event => {
+  const link = event.target.closest(".folder-dock a, .folder-hotspot");
+  if (link && link.hash !== location.hash && !event.defaultPrevented &&
+      !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+    clickedFolder = link;
+  }
+});
 window.addEventListener("hashchange", route);
 window.addEventListener("resize", () => { if (artworkPreview.open) finishPreview(); setScale(); });
 window.addEventListener("scroll",pinTitle,{passive:true});
