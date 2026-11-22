@@ -43,19 +43,28 @@ const artworks = {
 let openedFrom;
 function openPiece(trigger) {
   if (detail.open) return;
-  const piece = artworks[trigger.dataset.piece];
+  const isIllustration = trigger.classList.contains("illustration-card");
+  const piece = isIllustration ? {
+    title: trigger.querySelector(".work-caption strong").textContent,
+    category: "Illustration",
+  } : artworks[trigger.dataset.piece];
   if (!piece) return;
   openedFrom = trigger;
-  detail.dataset.kind = piece.fold ? "note" : "work";
+  detail.dataset.kind = isIllustration ? "illustration" : piece.fold ? "note" : "work";
   detailTitle.textContent = piece.title;
   detail.querySelector(".detail-category").textContent = piece.category;
-  detail.querySelector(".detail-copy").textContent = piece.copy;
+  detail.querySelector(".detail-copy").textContent = piece.copy ?? "";
   detailMedia.replaceChildren(...(piece.images ?? []).map(([file, alt]) => {
     const img = new Image();
     img.src = figma + file;
     img.alt = alt;
     return img;
   }));
+  if (isIllustration) {
+    const preview = trigger.querySelector("img").cloneNode();
+    preview.removeAttribute("loading");
+    detailMedia.append(preview);
+  }
   detailLink.hidden = !piece.href;
   if (piece.href) detailLink.href = piece.href;
   else detailLink.removeAttribute("href");
