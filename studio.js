@@ -128,48 +128,93 @@ detail.addEventListener("close", () => {
   if (openedFrom?.isConnected) openedFrom.focus({ preventScroll: true });
 });
 
-const dragPositions = new Map();
+const dragLayer = document.querySelector(".drag-layer");
+const placedObjects = new Map();
 let drag;
 let releasedDrag;
 for (const object of desk.querySelectorAll("[data-drag]")) {
-  dragPositions.set(object, { x: 0, y: 0 });
-  object.setAttribute("aria-description", "Drag to move, or use the arrow keys. Press Home to reset.");
+  object.setAttribute("aria-description", "Drag anywhere on the page, or use the arrow keys. Press Home to reset.");
 }
 
-function moveObject(object, targetX, targetY) {
-  const current = dragPositions.get(object);
-  const bounds = desk.getBoundingClientRect();
-  const objectRect = object.getBoundingClientRect();
-  const baseX = objectRect.left + objectRect.width / 2 - current.x;
-  const baseY = objectRect.top + objectRect.height / 2 - current.y;
-  const marginX = Math.min(objectRect.width / 2, bounds.width / 2);
-  const marginY = Math.min(objectRect.height / 2, bounds.height / 2);
-  const x = Math.max(bounds.left + marginX - baseX, Math.min(bounds.right - marginX - baseX, targetX));
-  const y = Math.max(bounds.top + marginY - baseY, Math.min(bounds.bottom - marginY - baseY, targetY));
-  dragPositions.set(object, { x, y });
-  object.style.setProperty("--x", x + "px");
-  object.style.setProperty("--y", y + "px");
+function pageCenter(object) {
+  const rect = object.getBoundingClientRect();
+  return { x: rect.left + rect.width / 2 + window.scrollX, y: rect.top + rect.height / 2 + window.scrollY };
 }
 
-desk.addEventListener("pointerdown", event => {
+function liftObject(object) {
+  if (placedObjects.has(object)) return;
+  const center = pageCenter(object);
+  const marker = document.createComment("Desk object position");
+  const size = { width: object.offsetWidth, height: object.offsetHeight };
+  const focused = document.activeElement === object;
+  object.before(marker);
+  placedObjects.set(object, { marker, ...size });
+  Object.assign(object.style, { width: size.width + "px", height: size.height + "px" });
+  dragLayer.append(object);
+  moveObject(object, center.x, center.y);
+  if (focused) object.focus({ preventScroll: true });
+}
+
+function moveObject(object, x, y) {
+  const { width, height } = placedObjects.get(object);
+  const painted = object.getBoundingClientRect();
+  const viewportWidth = document.documentElement.clientWidth;
+  const pageHeight = document.body.offsetHeight;
+  const halfWidth = Math.min(painted.width / 2, viewportWidth / 2);
+  const halfHeight = Math.min(painted.height / 2, pageHeight / 2);
+  x = Math.max(halfWidth, Math.min(viewportWidth - halfWidth, x));
+  y = Math.max(halfHeight, Math.min(pageHeight - halfHeight, y));
+  object.style.left = x - width / 2 + "px";
+  object.style.top = y - height / 2 + "px";
+}
+
+function positionHeldObject() {
+  moveObject(drag.object, drag.x + window.scrollX - drag.grabX, drag.y + window.scrollY - drag.grabY);
+}
+
+function scrollWithDrag() {
+  if (!drag?.moved) return;
+  const edge = Math.min(96, window.innerHeight / 4);
+  const speed = drag.y < edge ? (drag.y - edge) * .22
+    : drag.y > window.innerHeight - edge ? (drag.y - window.innerHeight + edge) * .22 : 0;
+  if (speed) {
+    window.scrollBy({ top: speed, behavior: "instant" });
+    positionHeldObject();
+  }
+  drag.frame = requestAnimationFrame(scrollWithDrag);
+}
+
+document.addEventListener("pointerdown", event => {
   const object = event.target.closest("[data-drag]");
-  if (!object || !event.isPrimary || event.button !== 0) return;
+  if (!object || drag || !event.isPrimary || event.button !== 0) return;
   releasedDrag = null;
-  drag = { object, id: event.pointerId, startX: event.clientX, startY: event.clientY, ...dragPositions.get(object), moved: false };
-  object.setPointerCapture(event.pointerId);
+  const rect = object.getBoundingClientRect();
+  drag = {
+    object, id: event.pointerId, x: event.clientX, y: event.clientY,
+    startX: event.clientX, startY: event.clientY,
+    grabX: event.clientX - rect.left - rect.width / 2,
+    grabY: event.clientY - rect.top - rect.height / 2,
+    moved: false,
+  };
   if (event.pointerType === "mouse") document.documentElement.classList.add("is-holding");
 });
-desk.addEventListener("pointermove", event => {
+document.addEventListener("pointermove", event => {
   if (drag?.id !== event.pointerId) return;
-  const dx = event.clientX - drag.startX;
-  const dy = event.clientY - drag.startY;
-  if (!drag.moved && Math.hypot(dx, dy) < 6) return;
-  drag.moved = true;
-  drag.object.classList.add("is-dragging");
-  moveObject(drag.object, drag.x + dx, drag.y + dy);
+  drag.x = event.clientX;
+  drag.y = event.clientY;
+  if (!drag.moved) {
+    if (Math.hypot(drag.x - drag.startX, drag.y - drag.startY) < 6) return;
+    liftObject(drag.object);
+    drag.object.setPointerCapture(event.pointerId);
+    drag.object.classList.add("is-dragging");
+    drag.moved = true;
+    drag.frame = requestAnimationFrame(scrollWithDrag);
+  }
+  positionHeldObject();
 });
 function finishDrag(event) {
-  if (drag?.id !== event.pointerId) return;
+  if (!drag || (event.type !== "blur" && drag.id !== event.pointerId)) return;
+  cancelAnimationFrame(drag.frame);
   drag.object.classList.remove("is-dragging");
   document.documentElement.classList.remove("is-holding");
   if (drag.moved) {
@@ -178,17 +223,35 @@ function finishDrag(event) {
   }
   drag = null;
 }
-desk.addEventListener("pointerup", finishDrag);
-desk.addEventListener("pointercancel", finishDrag);
-desk.addEventListener("lostpointercapture", finishDrag);
-desk.addEventListener("keydown", event => {
+document.addEventListener("pointerup", finishDrag);
+document.addEventListener("pointercancel", finishDrag);
+window.addEventListener("blur", finishDrag);
+window.addEventListener("scroll", () => {
+  if (drag?.moved) positionHeldObject();
+}, { passive: true });
+window.addEventListener("resize", () => {
+  for (const object of placedObjects.keys()) {
+    const center = pageCenter(object);
+    moveObject(object, center.x, center.y);
+  }
+});
+document.addEventListener("keydown", event => {
   const object = event.target.closest("[data-drag]");
-  if (!object) return;
+  if (!object || drag) return;
   const step = { ArrowUp: [0, -12], ArrowDown: [0, 12], ArrowLeft: [-12, 0], ArrowRight: [12, 0] }[event.key];
   if (!step && event.key !== "Home") return;
   event.preventDefault();
-  const { x, y } = dragPositions.get(object);
-  moveObject(object, step ? x + step[0] : 0, step ? y + step[1] : 0);
+  if (step) {
+    const center = pageCenter(object);
+    liftObject(object);
+    moveObject(object, center.x + step[0], center.y + step[1]);
+    object.scrollIntoView({ block: "nearest", behavior: "instant" });
+  } else if (placedObjects.has(object)) {
+    placedObjects.get(object).marker.replaceWith(object);
+    placedObjects.delete(object);
+    for (const name of ["width", "height", "left", "top"]) object.style.removeProperty(name);
+    object.focus();
+  }
   deskStatus.textContent = object.dataset.label + (step ? " moved." : " reset.");
 });
 

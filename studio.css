@@ -126,7 +126,7 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .dinner-image{background:#eed4a4}
 .dinner-image img{width:94%;max-width:95%;max-height:96%}
 
-.illustration-card .work-image{height:auto;aspect-ratio:1.08;grid-template:minmax(0,1fr) / minmax(0,1fr);padding:16px;background:#eee2c9}
+.illustration-card .work-image{grid-template:minmax(0,1fr) / minmax(0,1fr);padding:16px;background:#eee2c9}
 .illustration-card--blue .work-image{background:#dce4e4}
 .illustration-card--sage .work-image{background:#e0e3ce}
 .illustration-card .work-image img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
@@ -154,7 +154,10 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .sketch h2{margin-bottom:21px}
 .sketch-props{position:relative;aspect-ratio:1.35}
 .notebook,.handwritten,.sketch-pen{position:absolute}
-.notebook{width:55%;height:100%;object-fit:contain;left:23%;rotate:-11deg;filter:drop-shadow(10px 14px 10px #301c2744)}
+.notebook{width:55%;height:100%;left:23%;rotate:-11deg;filter:drop-shadow(10px 14px 10px #301c2744);background:none;border:0;padding:0;transition:filter .25s var(--ease)}
+.notebook img{width:100%;height:100%;object-fit:contain}
+.notebook:hover,.notebook:focus-visible{filter:drop-shadow(12px 18px 14px #301c276b)}
+.handwritten,.sketch-pen{pointer-events:none}
 .handwritten{width:32%;left:37%;top:32%;rotate:-11deg;mix-blend-mode:multiply}
 .sketch-pen{width:12%;height:76%;object-fit:contain;right:14%;top:20%;rotate:29deg;filter:drop-shadow(5px 7px 4px #2e27285c)}
 .sketch-note{--r:11deg;width:24%;right:1%;bottom:0;cursor:pointer;touch-action:manipulation}
@@ -198,3 +201,29 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .ink-pencil{aspect-ratio:492/869;--sheet-width:416.26016%;--sheet-x:-50.00000%;--sheet-y:-15.76525%}
 .ink-pen{aspect-ratio:911/654;--sheet-width:224.80790%;--sheet-x:-103.29308%;--sheet-y:-28.28746%}
 .ink-profile{aspect-ratio:429/890;--sheet-width:477.38928%;--sheet-x:-264.56876%;--sheet-y:-105.61798%}
+
+.drag-layer{position:absolute;top:0;left:0;width:0;height:0;z-index:11;pointer-events:none}
+.drag-layer [data-drag]{right:auto;bottom:auto;max-width:none;pointer-events:auto;z-index:1}
+.drag-layer [data-drag].is-dragging{z-index:2}
+.notebook-dialog{width:min(1080px,calc(100vw - 24px))}
+.notebook-shell{background:#e8e0cc;padding:clamp(14px,3vw,32px)}
+.notebook-shell h2{font-size:clamp(25px,4vw,43px);margin-bottom:16px}
+.book-spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));position:relative;clear:both;aspect-ratio:1.62;perspective:1800px;touch-action:pan-y;user-select:none;cursor:grab;box-shadow:0 10px 20px #44332435}
+.book-spread:active{cursor:grabbing}
+.book-page,.book-leaf-face{display:grid;place-items:center;min-width:0;min-height:0;padding:clamp(9px,3vw,36px);overflow:hidden;background:#fff8e5;background-image:repeating-linear-gradient(0deg,transparent 0 21px,#a6bcbe40 21px 22px)}
+.book-page--left,.book-leaf[data-side="left"] .book-leaf-front,.book-leaf[data-side="right"] .book-leaf-back{border-radius:6px 0 0 6px;box-shadow:inset -12px 0 17px -15px #44341f}
+.book-page--right,.book-leaf[data-side="right"] .book-leaf-front,.book-leaf[data-side="left"] .book-leaf-back{border-radius:0 6px 6px 0;box-shadow:inset 12px 0 17px -15px #44341f}
+.book-page>div,.book-leaf-face>div{max-height:100%;width:100%;min-height:0;display:grid;justify-items:center;align-content:center;gap:clamp(3px,1vw,11px);text-align:center}
+.book-page img,.book-leaf-face img{max-height:min(41dvh,290px);object-fit:contain;pointer-events:none}
+.book-page p,.book-leaf-face p{font-size:clamp(9px,1.7vw,16px);line-height:1.30;margin:0}
+.book-caption{font-weight:700}
+.book-pencil,.book-profile{position:relative;top:auto;left:auto;width:40%;z-index:auto}
+.book-pencil img,.book-profile img{max-height:none}
+.book-leaf{position:absolute;top:0;bottom:0;width:50%;z-index:2;transform-style:preserve-3d;pointer-events:none}
+.book-leaf[data-side="right"]{left:50%;transform-origin:left center}
+.book-leaf[data-side="left"]{left:0;transform-origin:right center}
+.book-leaf-face{position:absolute;inset:0;backface-visibility:hidden}
+.book-leaf-back{transform:rotateY(180deg)}
+.book-controls{margin-top:16px}
+.book-controls button:disabled{opacity:.35;cursor:default}
+@media(max-width:610px){.book-spread{aspect-ratio:1.22}.book-page img,.book-leaf-face img{max-height:28vw}.book-pencil img,.book-profile img{max-height:none}}

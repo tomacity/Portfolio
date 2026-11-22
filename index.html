@@ -7,8 +7,9 @@
   <meta name="description" content="George Papaemmanouil, UI/UX designer and illustrator in Syros, Greece. A desk of selected work, drawings and things in motion.">
   <title>Design, by hand.</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/studio/favicon.png">
-  <link rel="stylesheet" href="studio.css?v=9">
-  <script src="studio.js?v=5" defer></script>
+  <link rel="stylesheet" href="studio.css?v=10">
+  <script src="studio.js?v=6" defer></script>
+  <script src="notebook.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#illustrations">Skip to illustrations</a>
@@ -111,25 +112,25 @@
         <article class="work-item" data-category="illustration" data-reveal>
           <button class="work-card illustration-card illustration-card--blue" type="button" data-piece="illustration:desk-study" aria-labelledby="title-desk-study">
             <span class="work-image"><img src="assets/figma/ffddaffdcac599c1.webp" alt="A blue-gray drawing of a hand holding a device amid books and desk objects" loading="lazy"></span>
-            <span class="work-caption"><strong id="title-desk-study">Desk in blue</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+            <span class="work-caption"><span><strong id="title-desk-study">Desk in blue</strong><small>Tonal illustration</small></span><span class="work-arrow" aria-hidden="true">↗</span></span>
           </button>
         </article>
         <article class="work-item" data-category="illustration" data-reveal>
           <button class="work-card illustration-card illustration-card--pair illustration-card--sage" type="button" data-piece="illustration:rayo" aria-labelledby="title-rayo">
             <span class="work-image"><img src="assets/figma/c0863220792fcc73.webp" alt="A roaring gorilla breaking apart stone lettering" loading="lazy"><img src="assets/figma/b20a312aba66397f.webp" alt="Two illustrated figures with gold jewelry and RAYO rings" loading="lazy"></span>
-            <span class="work-caption"><strong id="title-rayo">RAYO</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+            <span class="work-caption"><span><strong id="title-rayo">RAYO</strong><small>Character illustration</small></span><span class="work-arrow" aria-hidden="true">↗</span></span>
           </button>
         </article>
         <article class="work-item" data-category="illustration" data-reveal>
           <button class="work-card illustration-card illustration-card--pair illustration-card--sand" type="button" data-piece="illustration:poster" aria-labelledby="title-poster">
             <span class="work-image"><img data-caption="Better Call Saul" src="assets/figma/41f7abade24e64c6.webp" alt="A yellow train beneath a red sky with a plume of white smoke" loading="lazy"><img data-caption="Breaking Bad" src="assets/figma/c920da4b02efae29.webp" alt="A silhouetted figure against mountains and a blue sky" loading="lazy"></span>
-            <span class="work-caption"><strong id="title-poster">Poster</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+            <span class="work-caption"><span><strong id="title-poster">Poster</strong><small>Better Call Saul · Breaking Bad</small></span><span class="work-arrow" aria-hidden="true">↗</span></span>
           </button>
         </article>
         <article class="work-item" data-category="illustration" data-reveal>
           <button class="work-card illustration-card illustration-card--pair illustration-card--blue" type="button" data-piece="illustration:podcast" aria-labelledby="title-podcast">
             <span class="work-image"><img src="assets/figma/13474393d7a711ca.webp" alt="Three cartoon portraits framed by the words Sota Men" loading="lazy"><img src="assets/figma/1fef6e0bf70f2ab6.webp" alt="Three cartoon figures posing together against a blue background" loading="lazy"></span>
-            <span class="work-caption"><strong id="title-podcast">Podcast</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+            <span class="work-caption"><span><strong id="title-podcast">Podcast</strong><small>Character studies</small></span><span class="work-arrow" aria-hidden="true">↗</span></span>
           </button>
         </article>
       </div>
@@ -167,7 +168,9 @@
       </div>
       <div class="sketch-props">
         <span class="ink-sticker ink-profile" role="img" aria-label="Character in profile"><img src="assets/studio/ink-stickers.png" alt="" loading="lazy"></span>
-        <img class="notebook" src="assets/figma/3d72e9b951b3f0a5.webp" alt="" loading="lazy">
+        <button class="notebook" type="button" aria-label="Open the sketchbook" aria-haspopup="dialog">
+          <img src="assets/figma/3d72e9b951b3f0a5.webp" alt="" loading="lazy">
+        </button>
         <img class="handwritten" src="assets/figma/0745709548986cf3.webp" alt="" loading="lazy">
         <img class="sketch-pen" src="assets/figma/aea5087e0dc84e66.webp" alt="" loading="lazy">
         <button class="object paper-ball sketch-note" type="button" data-piece="making" aria-label="Unfold the sketchbook note">
@@ -185,6 +188,7 @@
       <div class="wrap footer-line"><span>George Papaemmanouil</span><a href="https://github.com/tomacity">GitHub ↗</a><a href="https://www.instagram.com/gpapaemman/">Instagram ↗</a><a href="#home">Back to top ↑</a></div>
     </footer>
   </main>
+  <div class="drag-layer"></div>
   <dialog class="detail" aria-labelledby="detail-title">
     <div class="detail-paper">
       <button class="close-detail" type="button" aria-label="Close">×</button>
@@ -195,5 +199,32 @@
       <a class="work-link detail-link" hidden>Visit project <span aria-hidden="true">↗</span></a>
     </div>
   </dialog>
+  <dialog class="detail notebook-dialog" aria-labelledby="notebook-title">
+    <div class="detail-paper notebook-shell">
+      <button class="close-detail" type="button" aria-label="Close sketchbook">×</button>
+      <h2 id="notebook-title">The sketchbook</h2>
+      <div class="book-spread">
+        <div class="book-page book-page--left"></div>
+        <div class="book-page book-page--right"></div>
+      </div>
+      <div class="deck-controls book-controls">
+        <button type="button" data-turn="-1" aria-label="Previous pages">←</button>
+        <span class="deck-position" role="status"></span>
+        <button type="button" data-turn="1" aria-label="Next pages">→</button>
+      </div>
+    </div>
+  </dialog>
+  <template class="book-spread-content">
+    <div><p class="eyebrow">Sketch notes</p><img class="book-handwriting" src="assets/figma/0745709548986cf3.webp" alt=""><p>I start with a quick sketch to see what deserves the most attention.</p></div>
+    <div><span class="ink-sticker ink-pencil book-pencil" role="img" aria-label="A character holding a pencil"><img src="assets/studio/ink-stickers.png" alt=""></span></div>
+  </template>
+  <template class="book-spread-content">
+    <div><img src="assets/figma/ffddaffdcac599c1.webp" alt="A blue-gray drawing of objects on a desk"><p class="book-caption">Desk in blue</p></div>
+    <div><span class="ink-sticker ink-profile book-profile" role="img" aria-label="Hand-drawn character in profile"><img src="assets/studio/ink-stickers.png" alt=""></span></div>
+  </template>
+  <template class="book-spread-content">
+    <div><img src="assets/studio/loop-2.webp" alt="A hand-drawn face"><p class="book-caption">Line study II</p></div>
+    <div><img src="assets/studio/loop-3.webp" alt="A hand holding a pencil"><p class="book-caption">Pencil study</p></div>
+  </template>
 </body>
 </html>
