@@ -167,11 +167,7 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .ink-pencil:hover,.ink-pencil.is-dragging{scale:1.08}
 .work-heading{display:flex;align-items:center;gap:clamp(13px,2vw,28px)}
 .ink-pen{width:clamp(43px,7vw,108px);rotate:-12deg}
-.ink-profile{position:absolute;width:17%;top:30%;left:3%;rotate:-12deg}
-.about-title{position:relative}
-.ink-flower{position:absolute;width:clamp(52px,8vw,112px);right:3%;top:0;rotate:10deg;filter:invert(92%) sepia(16%) saturate(298%)}
-@media(max-width:610px){.ink-flower{right:0;top:-6%}}
+.ink-profile{position:absolute;width:17%;top:30%;left:19%;rotate:-12deg}
 .ink-pencil{aspect-ratio:492/869;--sheet-width:416.26016%;--sheet-x:-50.00000%;--sheet-y:-15.76525%}
 .ink-pen{aspect-ratio:911/654;--sheet-width:224.80790%;--sheet-x:-103.29308%;--sheet-y:-28.28746%}
-.ink-flower{aspect-ratio:905/958;--sheet-width:226.29834%;--sheet-x:-12.70718%;--sheet-y:-109.49896%}
 .ink-profile{aspect-ratio:429/890;--sheet-width:477.38928%;--sheet-x:-264.56876%;--sheet-y:-105.61798%}
