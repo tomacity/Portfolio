@@ -7,15 +7,14 @@
   <meta name="description" content="George Papaemmanouil, UI/UX designer and illustrator in Syros, Greece. A desk of selected work, drawings and things in motion.">
   <title>Design, by hand.</title>
   <link rel="icon" type="image/png" sizes="32x32" href="assets/studio/favicon.png">
-  <link rel="stylesheet" href="studio.css?v=7">
+  <link rel="stylesheet" href="studio.css?v=8">
   <script src="studio.js?v=4" defer></script>
 </head>
 <body>
-  <a class="skip" href="#projects">Skip to the work</a>
+  <a class="skip" href="#illustrations">Skip to illustrations</a>
   <header class="masthead wrap" id="home">
     <a class="signature" href="#home" aria-label="Home"><img src="assets/studio/site-mark.png" alt="" width="42" height="42"></a>
     <nav aria-label="Main navigation">
-      <a href="#projects">Work</a>
       <a href="#illustrations">Illustrations</a>
       <a href="#motion">Motion</a>
       <a href="#about">About</a>
@@ -27,7 +26,7 @@
       <div class="intro">
         <h1 id="intro-title">Design, <br><em>by hand.</em></h1>
         <p class="lede">I’m a UI/UX designer and illustrator in Syros, Greece. I draw, make things move, and turn ideas into interfaces.</p>
-        <a class="work-link" href="#projects">Explore my work <span aria-hidden="true">↘</span></a>
+        <a class="work-link" href="#illustrations">Explore my work <span aria-hidden="true">↘</span></a>
       </div>
       <div class="desk" data-desk aria-label="Interactive desk collage">
         <div class="desk-sheet" aria-hidden="true"></div>
@@ -58,11 +57,11 @@
       </div>
     </section>
 
-    <section class="work wrap" id="projects" aria-labelledby="work-title">
-      <div class="section-head" data-reveal>
-        <div class="work-heading"><h2 id="work-title">Selected work<span>.</span></h2>
+    <section class="work wrap" id="illustrations" aria-labelledby="work-title">
+      <div class="section-head" id="projects" data-reveal>
+        <div class="work-heading"><h2 id="work-title">Illustrations<span>.</span></h2>
           <span class="ink-sticker ink-pen" role="img" aria-label="Hand-drawn selection box and pen nib"><img src="assets/studio/ink-stickers.png" alt="" loading="lazy"></span></div>
-        <div class="filters" role="group" aria-label="Filter selected work">
+        <div class="filters" role="group" aria-label="Filter work">
           <button type="button" data-filter="all" aria-pressed="true">All</button>
           <button type="button" data-filter="design" aria-pressed="false">Design</button>
           <button type="button" data-filter="illustration" aria-pressed="false">Illustration</button>
@@ -94,30 +93,30 @@
             <span class="work-caption"><span><strong>Dinner with a fox</strong><small>Character illustration</small></span><span class="work-arrow" aria-hidden="true">↗</span></span>
           </button>
         </article>
-      </div>
-    </section>
-
-    <section class="illustration-gallery wrap" id="illustrations" aria-labelledby="illustrations-title">
-      <div class="section-head" data-reveal>
-        <h2 id="illustrations-title">Illustrations<span>.</span></h2>
-      </div>
-      <div class="illustration-grid">
-        <button class="work-card illustration-card illustration-card--blue" type="button" data-piece="illustration:desk-study" aria-labelledby="title-desk-study" data-reveal>
-          <span class="work-image"><img src="assets/figma/ffddaffdcac599c1.webp" alt="A blue-gray drawing of a hand holding a device amid books and desk objects" loading="lazy"></span>
-          <span class="work-caption"><strong id="title-desk-study">Desk in blue</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
-        </button>
-        <button class="work-card illustration-card illustration-card--pair illustration-card--sage" type="button" data-piece="illustration:rayo" aria-labelledby="title-rayo" data-reveal>
-          <span class="work-image"><img src="assets/figma/c0863220792fcc73.webp" alt="A roaring gorilla breaking apart stone lettering" loading="lazy"><img src="assets/figma/b20a312aba66397f.webp" alt="Two illustrated figures with gold jewelry and RAYO rings" loading="lazy"></span>
-          <span class="work-caption"><strong id="title-rayo">RAYO</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
-        </button>
-        <button class="work-card illustration-card illustration-card--pair illustration-card--sand" type="button" data-piece="illustration:poster" aria-labelledby="title-poster" data-reveal>
-          <span class="work-image"><img data-caption="Better Call Saul" src="assets/figma/41f7abade24e64c6.webp" alt="A yellow train beneath a red sky with a plume of white smoke" loading="lazy"><img data-caption="Breaking Bad" src="assets/figma/c920da4b02efae29.webp" alt="A silhouetted figure against mountains and a blue sky" loading="lazy"></span>
-          <span class="work-caption"><strong id="title-poster">Poster</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
-        </button>
-        <button class="work-card illustration-card illustration-card--pair illustration-card--blue" type="button" data-piece="illustration:podcast" aria-labelledby="title-podcast" data-reveal>
-          <span class="work-image"><img src="assets/figma/13474393d7a711ca.webp" alt="Three cartoon portraits framed by the words Sota Men" loading="lazy"><img src="assets/figma/1fef6e0bf70f2ab6.webp" alt="Three cartoon figures posing together against a blue background" loading="lazy"></span>
-          <span class="work-caption"><strong id="title-podcast">Podcast</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
-        </button>
+        <article class="work-item" data-category="illustration" data-reveal>
+          <button class="work-card illustration-card illustration-card--blue" type="button" data-piece="illustration:desk-study" aria-labelledby="title-desk-study">
+            <span class="work-image"><img src="assets/figma/ffddaffdcac599c1.webp" alt="A blue-gray drawing of a hand holding a device amid books and desk objects" loading="lazy"></span>
+            <span class="work-caption"><strong id="title-desk-study">Desk in blue</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+          </button>
+        </article>
+        <article class="work-item" data-category="illustration" data-reveal>
+          <button class="work-card illustration-card illustration-card--pair illustration-card--sage" type="button" data-piece="illustration:rayo" aria-labelledby="title-rayo">
+            <span class="work-image"><img src="assets/figma/c0863220792fcc73.webp" alt="A roaring gorilla breaking apart stone lettering" loading="lazy"><img src="assets/figma/b20a312aba66397f.webp" alt="Two illustrated figures with gold jewelry and RAYO rings" loading="lazy"></span>
+            <span class="work-caption"><strong id="title-rayo">RAYO</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+          </button>
+        </article>
+        <article class="work-item" data-category="illustration" data-reveal>
+          <button class="work-card illustration-card illustration-card--pair illustration-card--sand" type="button" data-piece="illustration:poster" aria-labelledby="title-poster">
+            <span class="work-image"><img data-caption="Better Call Saul" src="assets/figma/41f7abade24e64c6.webp" alt="A yellow train beneath a red sky with a plume of white smoke" loading="lazy"><img data-caption="Breaking Bad" src="assets/figma/c920da4b02efae29.webp" alt="A silhouetted figure against mountains and a blue sky" loading="lazy"></span>
+            <span class="work-caption"><strong id="title-poster">Poster</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+          </button>
+        </article>
+        <article class="work-item" data-category="illustration" data-reveal>
+          <button class="work-card illustration-card illustration-card--pair illustration-card--blue" type="button" data-piece="illustration:podcast" aria-labelledby="title-podcast">
+            <span class="work-image"><img src="assets/figma/13474393d7a711ca.webp" alt="Three cartoon portraits framed by the words Sota Men" loading="lazy"><img src="assets/figma/1fef6e0bf70f2ab6.webp" alt="Three cartoon figures posing together against a blue background" loading="lazy"></span>
+            <span class="work-caption"><strong id="title-podcast">Podcast</strong><span class="work-arrow" aria-hidden="true">↗</span></span>
+          </button>
+        </article>
       </div>
     </section>
 
