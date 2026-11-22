@@ -14,6 +14,7 @@ let pageIndex = 0;
 let bookEntrance = null;
 let pageTurn = null;
 let gesture = null;
+const turnedPageAngle = -168;
 
 function showPage() {
   bookPage.replaceChildren(pages[pageIndex].cloneNode(true));
@@ -56,22 +57,38 @@ function startTurn(direction) {
   const to = pageIndex + direction;
   if (bookEntrance || pageTurn || !pages[to]) return null;
   const leaf = document.createElement("div");
-  const face = document.createElement("div");
   leaf.className = "notebook-leaf";
   leaf.setAttribute("aria-hidden", "true");
-  face.className = "notebook-leaf-face";
-  face.append(bookCover.cloneNode(), pages[pageIndex].cloneNode(true));
-  leaf.append(face);
-  bookPaper.append(leaf);
-  const turn = { to, direction, leaf, angle: 0, animation: null };
+
+  const front = document.createElement("div");
+  front.className = "notebook-leaf-face";
+  front.append(bookCover.cloneNode(), pages[direction > 0 ? pageIndex : to].cloneNode(true));
+  const back = document.createElement("div");
+  back.className = "notebook-leaf-face notebook-leaf-back";
+  back.append(bookCover.cloneNode());
+  leaf.append(front, back);
+
+  const turn = { to, direction, leaf, progress: 0, animation: null };
   pageTurn = turn;
-  bookPage.replaceChildren(pages[to].cloneNode(true));
+  if (direction > 0) bookPage.replaceChildren(pages[to].cloneNode(true));
+  rotatePage(turn, 0);
+  bookPaper.append(leaf);
   return turn;
 }
 
+function pageFrame(turn, progress) {
+  const position = turn.direction > 0 ? progress : 1 - progress;
+  return {
+    transform: `rotateY(${turnedPageAngle * position}deg)`,
+    "--notebook-leaf-opacity": Math.min(1, (1 - position) * 6),
+  };
+}
+
 function rotatePage(turn, progress) {
-  turn.angle = turn.direction * 88 * progress;
-  turn.leaf.style.transform = `rotateY(${turn.angle}deg)`;
+  turn.progress = progress;
+  const frame = pageFrame(turn, progress);
+  turn.leaf.style.transform = frame.transform;
+  turn.leaf.style.setProperty("--notebook-leaf-opacity", frame["--notebook-leaf-opacity"]);
 }
 
 function finishTurn(turn, commit) {
@@ -80,11 +97,22 @@ function finishTurn(turn, commit) {
     settle();
     return;
   }
-  const endAngle = commit ? turn.direction * 88 : 0;
-  turn.animation = turn.leaf.animate([
-    { transform: `rotateY(${turn.angle}deg)` },
-    { transform: `rotateY(${endAngle}deg)` },
-  ], { duration: commit ? 420 : 210, easing: "cubic-bezier(.33,.04,.21,1)", fill: "forwards" });
+  const destination = commit ? 1 : 0;
+  const frames = [pageFrame(turn, turn.progress)];
+  // Keep the leaf opaque until it is almost flat against the other side.
+  const fadePoint = turn.direction > 0 ? 5 / 6 : 1 / 6;
+  if ((turn.progress - fadePoint) * (destination - fadePoint) < 0) {
+    frames.push({
+      ...pageFrame(turn, fadePoint),
+      offset: (fadePoint - turn.progress) / (destination - turn.progress),
+    });
+  }
+  frames.push(pageFrame(turn, destination));
+  turn.animation = turn.leaf.animate(frames, {
+    duration: commit ? 460 : 230,
+    easing: "cubic-bezier(.33,.04,.21,1)",
+    fill: "forwards",
+  });
   turn.animation.finished.then(settle, () => {});
 
   function settle() {
@@ -99,6 +127,7 @@ function finishTurn(turn, commit) {
 }
 
 function turnPage(direction) {
+  if (gesture) return;
   const turn = startTurn(direction);
   if (turn) finishTurn(turn, true);
 }
