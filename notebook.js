@@ -2,6 +2,8 @@
 
 const bookDialog = document.querySelector(".notebook-dialog");
 const bookTrigger = document.querySelector(".notebook");
+const notebookShell = bookDialog.querySelector(".notebook-shell");
+const bookClose = bookDialog.querySelector(".close-detail");
 const spread = bookDialog.querySelector(".book-spread");
 const leftPage = spread.querySelector(".book-page--left");
 const rightPage = spread.querySelector(".book-page--right");
@@ -12,6 +14,7 @@ const spreads = Array.from(document.querySelectorAll(".book-spread-content"), te
 let spreadIndex = 0;
 let pageTurn = null;
 let gesture = null;
+let bookEntrance = null;
 
 function showSpread() {
   leftPage.replaceChildren(spreads[spreadIndex][0].cloneNode(true));
@@ -28,7 +31,7 @@ function rotateLeaf(turn, progress) {
 
 function makeTurn(direction) {
   const to = spreadIndex + direction;
-  if (pageTurn || !spreads[to]) return null;
+  if (bookEntrance || pageTurn || !spreads[to]) return null;
   const outgoingSide = direction > 0 ? 1 : 0;
   const leaf = document.createElement("div");
   leaf.className = "book-leaf";
@@ -77,16 +80,102 @@ function turnPage(direction) {
   if (turn) finishBookTurn(turn, true);
 }
 
-bookTrigger.addEventListener("click", () => {
+function resetEntrance() {
+  if (!bookEntrance) return;
+  for (const effect of bookEntrance.effects) effect.cancel();
+  bookEntrance.cover.remove();
+  bookEntrance = null;
+  bookDialog.classList.remove("is-opening", "is-unfolding");
+  bookTrigger.classList.remove("is-lifted");
+}
+
+async function openSketchbook() {
+  if (bookDialog.open) return;
   spreadIndex = 0;
   showSpread();
+  const source = bookTrigger.getBoundingClientRect();
+  const width = bookTrigger.offsetWidth;
+  const height = bookTrigger.offsetHeight;
+  if (reducedMotion.matches || !Element.prototype.animate || !width || !height) {
+    bookDialog.showModal();
+    return;
+  }
+
+  const centerX = source.left + source.width / 2;
+  const centerY = source.top + source.height / 2;
+  const cover = document.createElement("div");
+  cover.className = "notebook-travel";
+  cover.setAttribute("aria-hidden", "true");
+  Object.assign(cover.style, {
+    left: centerX - width / 2 + "px", top: centerY - height / 2 + "px",
+    width: width + "px", height: height + "px",
+  });
+  const coverImage = bookTrigger.querySelector("img").cloneNode();
+  coverImage.removeAttribute("loading");
+  cover.append(coverImage);
+
+  // Keep the handwriting in the same spot on the cover as it lifts from the desk.
+  const handwriting = bookTrigger.parentElement.querySelector(".handwritten");
+  if (handwriting) {
+    const note = handwriting.getBoundingClientRect();
+    const dx = note.left + note.width / 2 - centerX;
+    const dy = note.top + note.height / 2 - centerY;
+    const angle = 11 * Math.PI / 180;
+    const clone = handwriting.cloneNode();
+    clone.className = "notebook-travel-ink";
+    clone.removeAttribute("loading");
+    Object.assign(clone.style, {
+      left: width / 2 + dx * Math.cos(angle) - dy * Math.sin(angle) + "px",
+      top: height / 2 + dx * Math.sin(angle) + dy * Math.cos(angle) + "px",
+      width: handwriting.offsetWidth + "px",
+    });
+    cover.append(clone);
+  }
+
+  const entrance = { cover, effects: [] };
+  bookEntrance = entrance;
+  bookDialog.classList.add("is-opening");
+  bookTrigger.classList.add("is-lifted");
+  bookDialog.append(cover);
   bookDialog.showModal();
-});
-bookDialog.querySelector(".close-detail").addEventListener("click", () => bookDialog.close());
+
+  const target = spread.getBoundingClientRect();
+  const scale = Math.min(target.height / height, target.width / (width * 1.8), window.innerHeight * .76 / height);
+  const destination = "translate(" + (window.innerWidth / 2 - centerX) + "px," +
+    (window.innerHeight / 2 - centerY) + "px) rotate(0deg) scale(" + scale + ")";
+  const flight = cover.animate([
+    { transform: "translate(0,0) rotate(-11deg) scale(1)" },
+    { transform: destination },
+  ], { duration: 560, easing: "cubic-bezier(.22,.83,.25,1)", fill: "forwards" });
+  entrance.effects.push(flight);
+  try {
+    await flight.finished;
+    if (bookEntrance !== entrance || !bookDialog.open) return;
+    bookDialog.classList.add("is-unfolding");
+    const uncover = notebookShell.animate([
+      { opacity: 0, transform: "scale(.87)", clipPath: "inset(0 25% 0 25% round 6px)" },
+      { opacity: 1, transform: "scale(1)", clipPath: "inset(0 0 0 0 round 0px)" },
+    ], { duration: 350, easing: "cubic-bezier(.22,.7,.25,1)", fill: "both" });
+    const fade = cover.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 230, fill: "forwards" });
+    entrance.effects.push(uncover, fade);
+    await uncover.finished;
+  } catch {
+    // Closing the dialog cancels any running entrance effects.
+  } finally {
+    if (bookEntrance === entrance) {
+      resetEntrance();
+      if (bookDialog.open) bookClose.focus({ preventScroll: true });
+    }
+  }
+}
+
+bookTrigger.addEventListener("click", openSketchbook);
+bookClose.addEventListener("click", () => bookDialog.close());
 bookDialog.addEventListener("click", event => {
   if (event.target === bookDialog) bookDialog.close();
 });
 bookDialog.addEventListener("close", () => {
+  resetEntrance();
   gesture = null;
   pageTurn?.animation?.cancel();
   pageTurn?.leaf.remove();
@@ -101,7 +190,7 @@ bookDialog.addEventListener("keydown", event => {
   turnPage(event.key === "ArrowRight" ? 1 : -1);
 });
 spread.addEventListener("pointerdown", event => {
-  if (event.button !== 0 || !event.isPrimary || pageTurn) return;
+  if (event.button !== 0 || !event.isPrimary || bookEntrance || pageTurn) return;
   gesture = { id: event.pointerId, x: event.clientX };
   spread.setPointerCapture(event.pointerId);
 });

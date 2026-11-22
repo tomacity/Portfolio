@@ -230,3 +230,11 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .book-controls{margin-top:16px}
 .book-controls button:disabled{opacity:.35;cursor:default}
 @media(max-width:610px){.book-spread{aspect-ratio:1.22}.book-page img,.book-leaf-face img{max-height:28vw}}
+
+.detail.notebook-dialog[open] .notebook-shell{animation:none}
+.notebook-dialog.is-opening{overflow:visible}
+.notebook-dialog.is-opening:not(.is-unfolding) .notebook-shell{visibility:hidden}
+.notebook.is-lifted,.notebook.is-lifted + .handwritten{opacity:0}
+.notebook-travel{position:fixed;z-index:3;pointer-events:none;filter:drop-shadow(10px 16px 12px #301c2750)}
+.notebook-travel>img:first-child{width:100%;height:100%;object-fit:contain}
+.notebook-travel-ink{position:absolute;translate:-50% -50%;transform:none;mix-blend-mode:multiply}
