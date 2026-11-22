@@ -61,9 +61,18 @@ function openPiece(trigger) {
     return img;
   }));
   if (isIllustration) {
-    const preview = trigger.querySelector("img").cloneNode();
-    preview.removeAttribute("loading");
-    detailMedia.append(preview);
+    detailMedia.append(...[...trigger.querySelectorAll("img")].map(image => {
+      const preview = image.cloneNode();
+      preview.removeAttribute("loading");
+      const figure = document.createElement("figure");
+      figure.append(preview);
+      if (image.dataset.caption) {
+        const caption = document.createElement("figcaption");
+        caption.textContent = image.dataset.caption;
+        figure.append(caption);
+      }
+      return figure;
+    }));
   }
   detailLink.hidden = !piece.href;
   if (piece.href) detailLink.href = piece.href;
