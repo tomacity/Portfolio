@@ -106,10 +106,23 @@ h1 em{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing
 .billiards-image{background:#dbd0e8}
 .billiards-image img{height:89%;width:auto;background:#fff;rotate:-7deg;box-shadow:7px 12px 26px #37294154}
 .billiards-image .tape{position:absolute;z-index:2;top:12%;left:30%;rotate:-15deg}
-.cards-image{background:#ded6b7;display:flex;justify-content:center;align-items:center}
-.cards-image img{width:25%;max-height:78%;box-shadow:4px 8px 14px #2d1a2450;rotate:-9deg;margin:0 -4px}
-.cards-image img:nth-child(2){rotate:0deg;z-index:1;translate:0 -8%}
-.cards-image img:nth-child(3){rotate:9deg}
+.cards-image{background:#ded6b7;display:grid;place-items:center}
+.cards-image img{
+  position:absolute;width:min(18%,120px);height:auto;max-height:none;
+  border-radius:4%;transform-origin:50% 90%;z-index:var(--layer);
+  box-shadow:2px 4px 10px #2d1a243b;
+  transform:translateX(calc(var(--slot) * 2.3%)) rotate(calc(var(--slot) * .6deg - 3deg));
+  transition:transform .52s var(--ease);
+}
+.deck-trigger:hover .cards-image img,.deck-trigger:focus-visible .cards-image img{
+  transform:translateX(calc(var(--slot) * 20%)) rotate(calc(var(--slot) * 5.3deg));
+}
+.deck-viewer{width:100%;display:grid;justify-items:center;gap:14px}
+.detail[data-kind="deck"] .deck-viewer img{max-height:min(59dvh,650px);width:auto;max-width:100%}
+.deck-controls{width:100%;display:flex;align-items:center;justify-content:center;gap:14px}
+.deck-controls button{width:42px;height:42px;border:1px solid var(--ink);border-radius:50%;background:none;font-size:22px}
+.deck-controls button:hover{background:var(--acid)}
+.deck-position{min-width:6ch;text-align:center;font-variant-numeric:tabular-nums}
 .dinner-image{background:#eed4a4}
 .dinner-image img{width:94%;max-width:95%;max-height:96%}
 

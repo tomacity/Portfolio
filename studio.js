@@ -22,8 +22,7 @@ const artworks = {
   },
   cards: {
     title: "Trading cards", category: "Illustration series",
-    copy: "A set of illustrated cards with Greek lettering, decorative borders, and three objects at the center: a sword, a crown, and a fan.",
-    images: [["44ebce9a5561507f.webp", "Sword card"], ["a33f2b47fd859109.webp", "Crown card"], ["fb8e19ca24622b67.webp", "Fan card"]],
+    copy: "An illustrated deck of objects and curiosities, with Greek lettering and hand-drawn frames.",
   },
   dinner: {
     title: "Dinner with a fox", category: "Character illustration",
@@ -40,17 +39,57 @@ const artworks = {
   },
 };
 
+function renderDeck(images) {
+  const viewer = document.createElement("div");
+  viewer.className = "deck-viewer";
+  const preview = new Image();
+  const controls = document.createElement("div");
+  controls.className = "deck-controls";
+  const position = document.createElement("span");
+  position.className = "deck-position";
+  position.setAttribute("role", "status");
+  let index = 0;
+
+  function showCard(offset) {
+    index = (index + offset + images.length) % images.length;
+    preview.src = images[index].src;
+    preview.alt = images[index].alt;
+    position.textContent = (index + 1) + " / " + images.length;
+  }
+
+  const previous = document.createElement("button");
+  previous.type = "button";
+  previous.setAttribute("aria-label", "Previous card");
+  previous.textContent = "←";
+  previous.addEventListener("click", () => showCard(-1));
+  const next = document.createElement("button");
+  next.type = "button";
+  next.setAttribute("aria-label", "Next card");
+  next.textContent = "→";
+  next.addEventListener("click", () => showCard(1));
+  viewer.addEventListener("keydown", event => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    showCard(event.key === "ArrowRight" ? 1 : -1);
+  });
+  controls.append(previous, position, next);
+  viewer.append(preview, controls);
+  showCard(0);
+  return viewer;
+}
+
 let openedFrom;
 function openPiece(trigger) {
   if (detail.open) return;
   const isIllustration = trigger.classList.contains("illustration-card");
+  const isDeck = trigger.dataset.piece === "cards";
   const piece = isIllustration ? {
     title: trigger.querySelector(".work-caption strong").textContent,
     category: "Illustration",
   } : artworks[trigger.dataset.piece];
   if (!piece) return;
   openedFrom = trigger;
-  detail.dataset.kind = isIllustration ? "illustration" : piece.fold ? "note" : "work";
+  detail.dataset.kind = isDeck ? "deck" : isIllustration ? "illustration" : piece.fold ? "note" : "work";
   detailTitle.textContent = piece.title;
   detail.querySelector(".detail-category").textContent = piece.category;
   detail.querySelector(".detail-copy").textContent = piece.copy ?? "";
@@ -60,6 +99,7 @@ function openPiece(trigger) {
     img.alt = alt;
     return img;
   }));
+  if (isDeck) detailMedia.append(renderDeck([...trigger.querySelectorAll(".cards-image img")]));
   if (isIllustration) {
     detailMedia.append(...[...trigger.querySelectorAll("img")].map(image => {
       const preview = image.cloneNode();
