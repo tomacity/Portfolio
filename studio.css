@@ -46,25 +46,7 @@ section[id],footer[id]{scroll-margin-top:22px}
 .contact-link{justify-self:end;border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:700;white-space:nowrap;transition:background .22s,transform .22s}
 .contact-link:hover{background:var(--acid);transform:translateY(-2px)}
 .hero{display:grid;grid-template-columns:.92fr 1.08fr;align-items:center;gap:12px;min-height:min(720px,calc(100svh - 78px));padding-block:32px 58px;isolation:isolate}
-.intro{position:relative;z-index:1;min-width:0}
-.intro-sketches{
-  width:min(100%,360px);overflow:hidden;margin:0 0 clamp(15px,2vw,24px);
-  border-block:1px solid #58406530;
-  mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
-}
-.intro-sketch-track{display:flex;width:max-content;animation:sketch-strip 18s linear infinite}
-.intro-sketch-run{display:flex;flex:none}
-.intro-sketch-run>span{display:grid;place-items:center;position:relative;width:clamp(74px,8vw,78px);height:48px}
-.intro-sketch-run>span::after{
-  content:"";position:absolute;right:0;top:50%;width:3px;height:3px;rotate:45deg;background:#735c86aa;
-}
-.intro-sketch{display:block;background-image:url("assets/studio/ink-stickers.png");background-repeat:no-repeat;opacity:.85}
-.sketch-pencil{width:21px;aspect-ratio:492/869;background-size:416.26% auto;background-position:15.81% 11.63%;rotate:-9deg}
-.sketch-nib{width:23px;aspect-ratio:210/238;background-size:975.24% auto;background-position:88.68% 32.71%;rotate:11deg}
-.sketch-flower{width:35px;aspect-ratio:930/960;background-size:220.22% auto;background-position:10.82% 95.59%;rotate:-7deg}
-.sketch-profile{width:18px;aspect-ratio:429/890;background-size:477.39% auto;background-position:70.1% 81.18%;rotate:8deg}
-.sketch-selection{width:41px;aspect-ratio:773/435;background-size:264.94% auto;background-position:74.04% 12.15%;rotate:-5deg}
-@keyframes sketch-strip{to{transform:translateX(-50%)}}
+.intro{position:relative;z-index:1}
 .eyebrow{font:700 12px/1.3 "Courier New",monospace;letter-spacing:.10em;text-transform:uppercase;margin:0 0 16px}
 h1,h2,p{margin-top:0}
 h1{font-size:clamp(72px,8.8vw,144px);line-height:.83;margin:0 0 30px;letter-spacing:-.078em;font-weight:900}
